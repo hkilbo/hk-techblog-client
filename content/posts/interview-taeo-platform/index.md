@@ -7,7 +7,8 @@ tags: ["인터뷰","플랫폼","회고"]
 author: { name: "태오", role: "Platform Engineer" }
 publishedAt: 2026-09-23
 readingMinutes: 8
-cover: ./cover.jpg
+# 목업 사진(Unsplash 라이선스). 실제 인터뷰 사진이 생기면 ./cover.jpg로 바꾼다
+cover: "https://images.unsplash.com/photo-1557862921-37829c790f19?w=900&h=1200&fit=crop&crop=faces&q=80"
 ---
 
 태오는 속보 시간대의 서버를 책임집니다. 평소의 20배가 몰리는 날에도 홈이 열리게 하는 일입니다. 장애가 났던 날의 회고부터 물었습니다.

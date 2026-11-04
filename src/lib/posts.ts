@@ -31,7 +31,8 @@ export interface Post {
 /** frontmatter를 화면이 쓰는 모양으로 바꾼다. 썸네일은 빌드 때 800px webp로 줄인다 */
 async function toPost(entry: CollectionEntry<'posts'>): Promise<Post> {
   const { cover, publishedAt, series, ...data } = entry.data;
-  const thumbnail = await getImage({ src: cover, width: 800, format: 'webp' });
+  // 주소로 받은 표지는 크기를 모르므로 받아서 잰다(inferSize)
+  const thumbnail = await getImage({ src: cover, width: 800, format: 'webp', inferSize: typeof cover === 'string' });
   return {
     ...data,
     id: entry.id,
