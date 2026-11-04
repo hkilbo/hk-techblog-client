@@ -1,0 +1,37 @@
+---
+import '@/styles/global.css';
+import Footer from '@/components/layout/Footer.astro';
+import Gnb from '@/components/layout/Gnb.astro';
+import Header from '@/components/layout/Header.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = '한국일보 기술 블로그',
+  description = '한국일보 개발자와 프로덕트 팀이 일하면서 배운 것, 고민한 것, 만든 것을 씁니다.',
+} = Astro.props;
+---
+
+<!doctype html>
+<!-- 다크만 쓴다. 헤더·푸터 웹 컴포넌트가 data-theme을 읽어 다크로 그린다 -->
+<html lang="ko" data-theme="dark" data-gnb="solid" class="h-full antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="alternate" type="application/rss+xml" title="한국일보 기술 블로그" href="/rss.xml" />
+    <link rel="preload" href="/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
+  </head>
+  <body class="flex min-h-full flex-col pt-64 xl:pt-76">
+    <Header />
+    <Gnb />
+    <slot />
+    <Footer />
+  </body>
+</html>

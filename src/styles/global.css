@@ -1,0 +1,154 @@
+@import 'tailwindcss';
+
+/* Pretendard는 public/fonts에서 바로 읽는다. BaseLayout이 preload한다 */
+@font-face {
+  font-family: 'Pretendard Variable';
+  src: url('/fonts/PretendardVariable.woff2') format('woff2-variations');
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 1rem = 10px(html 62.5%). 사내 웹 컴포넌트(header·footer)도 이 기준이다. 숫자 클래스는 px로 읽는다: p-16 = 16px, text-17 = 17px */
+@theme {
+  --spacing: 0.1rem;
+
+  --text-*: initial;
+  --text-12: 1.2rem;
+  --text-14: 1.4rem;
+  --text-15: 1.5rem;
+  --text-16: 1.6rem;
+  --text-17: 1.7rem;
+  --text-17--line-height: 1.8;
+  --text-18: 1.8rem;
+  --text-18--line-height: 1.45;
+  --text-20: 2rem;
+  --text-20--line-height: 1.4;
+  --text-22: 2.2rem;
+  --text-22--line-height: 1.45;
+  --text-28: 2.8rem;
+  --text-28--line-height: 1.4;
+  --text-36: 3.6rem;
+  --text-36--line-height: 1.25;
+  --text-48: 4.8rem;
+  --text-48--line-height: 1.25;
+
+  --radius-*: initial;
+  --radius-4: 0.4rem;
+  --radius-8: 0.8rem;
+  --radius-12: 1.2rem;
+  --radius-16: 1.6rem;
+
+  --container-*: initial;
+
+  /* 브랜드 로고(public/brand)에서 잰 라임, 에러 일러스트에서 잰 코랄. 테마와 상관없이 같다 */
+  --color-brand-lime: #88f03e;
+  --color-brand-coral: #ff6363;
+
+  /* 타자기 커서(모션 UI M03). 부드럽게 흐려지지 않고 1초에 한 번 끊어서 깜빡인다 */
+  --animate-blink: blink 1s steps(1) infinite;
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+}
+
+/* 색 출처: hk-home-client(한국일보 홈)의 다크 모드. accent는 huick 색이다. 규칙은 DESIGN.md §2. 다크만 쓴다 */
+:root {
+  color-scheme: dark;
+  --background: #000000;
+  --foreground: #ffffff;
+  --body: #dddddd;
+  --muted: #cccccc;
+  --line: #444444;
+  --accent: #ccff00;
+  --surface: #1a1a1a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-surface: var(--surface);
+  --font-sans: 'Pretendard Variable', system-ui, -apple-system, 'Apple SD Gothic Neo', sans-serif;
+}
+
+/* 헤더·푸터 웹 컴포넌트와 같은 좌우 기준: 최대 1280px, 여백 16 → 20(481px~) → 40(1280px~) */
+@utility page-container {
+  width: 100%;
+  max-width: 128rem;
+  margin-inline: auto;
+  padding-inline: 1.6rem;
+
+  @media (width >= 481px) {
+    padding-inline: 2rem;
+  }
+
+  @media (width >= 1280px) {
+    padding-inline: 4rem;
+  }
+}
+
+@layer base {
+  html {
+    font-size: 62.5%;
+  }
+
+  body {
+    font-size: 1.6rem;
+    background: var(--background);
+    color: var(--body);
+  }
+}
+
+/* 글 본문(Markdown). Next 버전의 PostBody가 블록마다 붙이던 클래스를 그대로 옮겼다(DESIGN.md §8) */
+@layer components {
+  .post-body {
+    @apply text-17;
+
+    & > h2 {
+      @apply mt-48 mb-16 scroll-mt-140 border-b border-line pb-12 text-28 font-bold text-foreground;
+    }
+
+    & > p {
+      @apply mt-20;
+    }
+
+    & > ul {
+      @apply mt-20 list-disc pl-24;
+
+      & > li + li {
+        @apply mt-8;
+      }
+    }
+
+    & > blockquote {
+      @apply mt-20 rounded-r-8 border-l-4 border-accent bg-accent/5 px-20 py-12;
+    }
+
+    & a {
+      @apply text-accent underline;
+    }
+
+    /* 코드 블록: Shiki가 색을 입힌다. 바탕은 surface, 글꼴은 Pretendard(DESIGN.md §3), 오른쪽 위에 언어 이름 */
+    & > pre.astro-code {
+      @apply relative mt-20 overflow-x-auto rounded-8 px-20 pt-34 pb-16 text-14 leading-[1.7];
+      background-color: var(--surface) !important;
+      font-family: var(--font-sans);
+
+      & code {
+        font-family: inherit;
+      }
+
+      &::before {
+        @apply absolute top-12 right-20 text-12 font-semibold text-muted;
+        content: attr(data-language);
+      }
+    }
+  }
+}

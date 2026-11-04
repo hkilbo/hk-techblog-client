@@ -1,0 +1,30 @@
+---
+import type { InferGetStaticPropsType } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { PostList } from '@/components/post/PostList';
+import { getPosts, tagSlug } from '@/lib/posts';
+
+// 글에 붙은 태그마다 페이지 하나. 같은 slug면 처음 나온 표기를 이름으로 쓴다
+export async function getStaticPaths() {
+  const names = new Map<string, string>();
+  for (const post of await getPosts()) {
+    for (const tag of post.tags) if (!names.has(tagSlug(tag))) names.set(tagSlug(tag), tag);
+  }
+  return [...names].map(([slug, name]) => ({ params: { tag: slug }, props: { slug, name } }));
+}
+
+// 글 페이지의 태그를 누르면 온다. 레이아웃은 시리즈 목록과 같은 한 열 글 목록이다
+const { slug, name } = Astro.props as InferGetStaticPropsType<typeof getStaticPaths>;
+const posts = (await getPosts()).filter((post) => post.tags.some((tag) => tagSlug(tag) === slug));
+---
+
+<BaseLayout title={`#${name} | 한국일보 기술 블로그`}>
+  <main class="page-container flex-1 py-64 md:py-80">
+    <p class="text-14 font-semibold text-accent">태그</p>
+    <div class="mt-16 mb-40 flex items-center gap-12">
+      <h1 class="text-36 font-extrabold tracking-tight text-foreground md:text-48">#{name}</h1>
+      <span class="rounded-4 bg-accent px-8 py-2 text-12 font-bold text-background">{posts.length}</span>
+    </div>
+    <PostList posts={posts} />
+  </main>
+</BaseLayout>

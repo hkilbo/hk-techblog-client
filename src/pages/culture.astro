@@ -1,0 +1,57 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import InterviewHero from '@/components/culture/InterviewHero.astro';
+import { PostList } from '@/components/post/PostList';
+import { TALENTS, WAYS_OF_WORKING } from '@/data/culture';
+import { getPosts } from '@/lib/posts';
+
+// 개발자 인터뷰를 첫 화면에, 일하는 방식과 찾는 동료를 그 아래에, 나머지 컬처 글은 맨 아래에 둔다. Tech와 레이아웃이 다르다
+const posts = await getPosts('culture');
+const interviews = posts.filter((post) => post.kind === 'interview');
+const stories = posts.filter((post) => post.kind !== 'interview');
+---
+
+<BaseLayout title="Culture | 한국일보 기술 블로그">
+  <main class="flex-1">
+    <InterviewHero interviews={interviews} />
+
+    <section class="page-container py-64 md:py-80">
+      <h2 class="text-28 font-bold text-foreground">일하는 방식과 복지</h2>
+      <!-- Product 서비스 카드와 같은 회색 카드 그리드 -->
+      <ul class="mt-24 grid gap-16 md:grid-cols-2 lg:grid-cols-3">
+        {WAYS_OF_WORKING.map(({ icon: Icon, title, description, options }) => (
+          <li class="rounded-12 bg-surface p-24">
+            <Icon class="size-20 text-foreground" stroke-width={1.75} aria-hidden="true" />
+            <h3 class="mt-16 text-18 font-semibold text-foreground">{title}</h3>
+            <p class="mt-8 text-14 text-muted">{description}</p>
+            {options && (
+              <ul class="mt-16 flex flex-wrap gap-8">
+                {options.map((option) => (
+                  <li class="rounded-full border border-line px-12 py-4 text-12 font-semibold text-foreground">
+                    {option}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      <h2 class="mt-80 text-28 font-bold text-foreground">이런 동료를 찾습니다</h2>
+      <ol class="mt-24 grid max-w-896 gap-32 md:grid-cols-2">
+        {TALENTS.map(({ title, description }, i) => (
+          <li class="flex gap-16">
+            <span class="text-28 font-extrabold text-accent tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h3 class="text-18 font-semibold text-foreground">{title}</h3>
+              <p class="mt-8 text-15">{description}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <h2 class="mt-80 mb-24 text-28 font-bold text-foreground">컬처 이야기</h2>
+      <PostList posts={stories} />
+    </section>
+  </main>
+</BaseLayout>

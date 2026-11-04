@@ -1,0 +1,32 @@
+---
+import { ArrowRight } from '@lucide/astro';
+import { getSeriesPosts } from '@/lib/posts';
+import { getAllSeries } from '@/lib/series';
+import SeriesCard from '@/components/series/SeriesCard.astro';
+
+// 홈의 시리즈 줄. 시리즈가 없으면 섹션째 빠진다
+const allSeries = await getAllSeries();
+const counts = await Promise.all(allSeries.map((series) => getSeriesPosts(series.id).then((posts) => posts.length)));
+---
+
+{allSeries.length > 0 && (
+  <section class="page-container py-64 md:py-80">
+    <div class="flex items-baseline justify-between gap-16">
+      <h2 class="text-20 font-bold text-foreground uppercase">Series</h2>
+      <a
+        href="/series/"
+        class="flex items-center gap-4 text-14 font-semibold text-muted transition-colors hover:text-foreground"
+      >
+        모든 시리즈
+        <ArrowRight class="size-16" stroke-width={1.75} aria-hidden="true" />
+      </a>
+    </div>
+    <ul class="mt-24 grid gap-32 md:grid-cols-2 lg:grid-cols-3">
+      {allSeries.map((series, i) => (
+        <li>
+          <SeriesCard series={series} count={counts[i]} />
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

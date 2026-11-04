@@ -1,0 +1,15 @@
+---
+import { fetchHtmlFragment } from '@/lib/fetchHtmlFragment';
+
+// 사내 interactive-header v2. 빌드 때 HTML 조각을 받아 그대로 넣고, 브라우저에서 header.js가 하이드레이션한다.
+// 화면 위에 고정되므로 BaseLayout의 body가 높이만큼 여백(pt-64 xl:pt-76)을 둔다
+const BASE_URL = 'https://assets.hankookilbo.com/components/header/interactive-header/v2';
+const html = await fetchHtmlFragment(`${BASE_URL}/interactive-header.html`);
+---
+
+{html && (
+  <>
+    <div set:html={html} />
+    <script is:inline src={`${BASE_URL}/header.js`} defer />
+  </>
+)}

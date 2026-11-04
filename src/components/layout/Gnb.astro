@@ -1,0 +1,24 @@
+---
+const MENUS = [
+  { label: 'Tech', href: '/tech/' },
+  { label: 'Product', href: '/product/' },
+  { label: 'Culture', href: '/culture/' },
+  // Apply는 블로그 안 페이지가 아니라 한국일보 그룹 채용 홈페이지로 바로 간다. 채용 링크는 여기 하나만 둔다
+  { label: 'Apply', href: 'https://hankookilbo.careerlink.kr/' },
+];
+---
+
+<!-- 바탕은 interactive-header와 같은 검정 80%(#000C) -->
+<nav aria-label="블로그 메뉴" class="sticky top-64 z-600 border-b border-line bg-background/80 backdrop-blur xl:top-76">
+  <div class="page-container flex h-48 items-center md:h-56">
+    <ul class="flex gap-16 md:gap-28">
+      {MENUS.map(({ label, href }) => (
+        <li>
+          <a href={href} class="text-14 font-medium text-muted transition-colors hover:text-foreground md:text-15">
+            {label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>

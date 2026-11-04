@@ -1,0 +1,101 @@
+---
+import type { InferGetStaticPropsType } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import BackToTop from '@/components/post/BackToTop.astro';
+import Giscus from '@/components/post/Giscus.astro';
+import PostCard from '@/components/post/PostCard.astro';
+import SeriesNav from '@/components/post/SeriesNav.astro';
+import { CATEGORY_LABEL, TOPIC_LABEL } from '@/data/categories';
+import { getPost, getPosts, getRelatedPosts, tagSlug } from '@/lib/posts';
+
+export async function getStaticPaths() {
+  return (await getPosts()).map((post) => ({ params: { id: post.id }, props: { post } }));
+}
+
+// DESIGN.md §8. 본문 열 896px + 목차 224px, lg 미만은 한 열
+const { post } = Astro.props as InferGetStaticPropsType<typeof getStaticPaths>;
+const result = await getPost(post.id);
+if (!result) throw new Error(`글이 없습니다: ${post.id}`); // getStaticPaths가 있는 글만 넘기므로 생기면 빌드 버그다
+const { Content, headings } = result;
+const related = await getRelatedPosts(post);
+const toc = headings.filter((heading) => heading.depth === 2);
+---
+
+<BaseLayout title={`${post.title} | 한국일보 기술 블로그`} description={post.summary}>
+  <main class="flex-1">
+    <article class="page-container py-48 md:py-64">
+      <div class="lg:grid lg:grid-cols-[minmax(0,896px)_224px] lg:justify-between lg:gap-40">
+        <div class="min-w-0">
+          <header>
+            <p class="text-12 text-muted">
+              <span class="font-bold text-accent">
+                {CATEGORY_LABEL[post.category]}
+                {post.topic && ` · ${TOPIC_LABEL[post.topic]}`}
+              </span>{' '}
+              · <time datetime={post.publishedAt}>{post.publishedAt.replaceAll('-', '.')}</time> · {post.readingMinutes}{' '}
+              min
+            </p>
+            <h1 class="mt-16 text-36 font-extrabold tracking-tight text-foreground md:text-48">{post.title}</h1>
+            <p class="mt-16 text-17 text-muted">{post.summary}</p>
+            <p class="mt-24 flex items-baseline gap-8 text-14">
+              <span class="font-semibold text-foreground">{post.author.name}</span>
+              <span class="text-muted">{post.author.role}</span>
+            </p>
+            <ul class="mt-16 flex flex-wrap gap-8">
+              {post.tags.map((tag) => (
+                <li>
+                  <a
+                    href={`/tags/${tagSlug(tag)}/`}
+                    class="block rounded-4 border border-line bg-surface px-8 py-4 text-12 transition-colors hover:border-foreground"
+                  >
+                    #{tag}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </header>
+
+          <SeriesNav post={post} />
+          <div class="post-body">
+            <Content />
+          </div>
+
+          <Giscus />
+        </div>
+
+        {toc.length > 0 && (
+          <aside class="hidden lg:block">
+            <nav aria-label="목차" class="sticky top-140">
+              <p class="text-14 font-semibold text-foreground">On this page</p>
+              <ul class="mt-12 flex flex-col gap-8 border-l border-line pl-16">
+                {toc.map((heading) => (
+                  <li>
+                    <a href={`#${heading.slug}`} class="text-14 text-muted transition-colors hover:text-foreground">
+                      {heading.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
+        )}
+      </div>
+
+      {related.length > 0 && (
+        <section aria-labelledby="related-title" class="mt-80 border-t border-line pt-40">
+          <h2 id="related-title" class="text-22 font-semibold text-foreground">
+            관련 글
+          </h2>
+          <ul class="mt-24 grid gap-32 md:grid-cols-3">
+            {related.map((relatedPost) => (
+              <li>
+                <PostCard post={relatedPost} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </article>
+    <BackToTop />
+  </main>
+</BaseLayout>

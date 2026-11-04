@@ -1,0 +1,13 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { PostFeed } from '@/components/post/PostFeed';
+import { getPosts } from '@/lib/posts';
+
+const posts = await getPosts('tech');
+---
+
+<BaseLayout title="Tech | 한국일보 기술 블로그">
+  <main class="page-container flex-1 pt-40 pb-64 md:pt-56 md:pb-80">
+    <PostFeed client:load posts={posts} title="Tech" titleAs="h1" withHomeLink />
+  </main>
+</BaseLayout>

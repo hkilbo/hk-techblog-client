@@ -1,0 +1,24 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SeriesCard from '@/components/series/SeriesCard.astro';
+import { getSeriesPosts } from '@/lib/posts';
+import { getAllSeries } from '@/lib/series';
+
+// 시리즈 전체를 카드로 보여 준다
+const allSeries = await getAllSeries();
+const counts = await Promise.all(allSeries.map((series) => getSeriesPosts(series.id).then((posts) => posts.length)));
+---
+
+<BaseLayout title="시리즈 | 한국일보 기술 블로그">
+  <main class="page-container flex-1 py-64 md:py-80">
+    <h1 class="text-28 font-bold text-foreground">시리즈</h1>
+    <p class="mt-8 text-15 text-muted">한 주제를 여러 편에 걸쳐 이어 쓴 글 묶음입니다.</p>
+    <ul class="mt-24 grid gap-32 md:grid-cols-2 lg:grid-cols-3">
+      {allSeries.map((series, i) => (
+        <li>
+          <SeriesCard series={series} count={counts[i]} />
+        </li>
+      ))}
+    </ul>
+  </main>
+</BaseLayout>

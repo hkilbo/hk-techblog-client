@@ -1,0 +1,20 @@
+---
+import { fetchHtmlFragment } from '@/lib/fetchHtmlFragment';
+
+// 사내 footer v2. 빌드 때 HTML 조각을 받아 그대로 넣는다. footer.js는 무거워서(약 2MB) 페이지 로드가 끝난 뒤 붙인다
+const BASE_URL = 'https://assets.hankookilbo.com/components/footer/v2';
+const html = await fetchHtmlFragment(`${BASE_URL}/footer.html`);
+---
+
+{html && (
+  <>
+    <div set:html={html} />
+    <script is:inline define:vars={{ src: `${BASE_URL}/footer.js` }}>
+      addEventListener('load', () => {
+        const script = document.createElement('script');
+        script.src = src;
+        document.body.append(script);
+      });
+    </script>
+  </>
+)}

@@ -1,0 +1,25 @@
+---
+import { InterviewCarousel } from './InterviewCarousel';
+import type { Post } from '@/lib/posts';
+
+interface Props {
+  interviews: Post[];
+}
+
+// 커리업 일잼원정대 블록을 따라 만든 Culture 첫 화면. 옅은 회색(surface) 바탕에 카드를 올리고, 색은 페이지 테마를 따른다
+const { interviews } = Astro.props;
+---
+
+<section class="bg-surface text-foreground">
+  <div class="page-container py-64 md:py-80">
+    <h1 class="text-36 font-extrabold tracking-tight md:text-48">
+      뉴스를 만드는 개발팀은
+      <br />
+      이렇게 일합니다.
+    </h1>
+    <p class="mt-20 max-w-520 text-17 text-body">
+      개발자들이 자기 일을 직접 이야기합니다. 어떻게 일하는지, 무엇을 중요하게 보는지.
+    </p>
+    {interviews.length > 0 && <InterviewCarousel client:load posts={interviews} />}
+  </div>
+</section>

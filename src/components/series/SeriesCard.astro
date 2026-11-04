@@ -1,0 +1,26 @@
+---
+import type { Series } from '@/lib/series';
+
+interface Props {
+  series: Series;
+  count: number;
+}
+
+const { series, count } = Astro.props;
+---
+
+<!-- 시리즈 카드. 관련 글 카드(PostCard)처럼 테두리 없이 16:9 표지 아래에 글이 온다 -->
+<a href={`/series/${series.id}/`} class="group block">
+  <div class="relative aspect-video overflow-hidden rounded-12">
+    <img
+      src={series.cover}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      class="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
+    />
+  </div>
+  <p class="mt-12 text-12 font-extrabold text-muted uppercase">시리즈 · {count}편</p>
+  <h3 class="mt-4 text-18 font-bold text-foreground transition-colors group-hover:text-accent">{series.title}</h3>
+  <p class="mt-8 line-clamp-2 text-14 text-muted">{series.description}</p>
+</a>
