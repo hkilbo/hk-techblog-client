@@ -1,6 +1,7 @@
 ---
 import type { InferGetStaticPropsType } from 'astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import HighlightTitle from '@/components/brand/HighlightTitle.astro';
 import BackToTop from '@/components/post/BackToTop.astro';
 import Giscus from '@/components/post/Giscus.astro';
 import PostCard from '@/components/post/PostCard.astro';
@@ -22,7 +23,7 @@ const toc = headings.filter((heading) => heading.depth === 2);
 ---
 
 <BaseLayout title={`${post.title} | 한국일보 기술 블로그`} description={post.summary}>
-  <main class="flex-1">
+  <main id="main" tabindex="-1" class="flex-1">
     <article class="page-container py-48 md:py-64">
       <div class="lg:grid lg:grid-cols-[minmax(0,896px)_224px] lg:justify-between lg:gap-40">
         <div class="min-w-0">
@@ -83,9 +84,7 @@ const toc = headings.filter((heading) => heading.depth === 2);
 
       {related.length > 0 && (
         <section aria-labelledby="related-title" class="mt-80 border-t border-line pt-40">
-          <h2 id="related-title" class="text-22 font-semibold text-foreground">
-            관련 글
-          </h2>
+          <HighlightTitle id="related-title" lead="이 글이 좋았다면," keyword="관련 글" />
           <ul class="mt-24 grid gap-32 md:grid-cols-3">
             {related.map((relatedPost) => (
               <li>

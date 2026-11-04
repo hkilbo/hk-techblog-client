@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import HighlightTitle from '@/components/brand/HighlightTitle.astro';
+import IconicMark from '@/components/brand/IconicMark.astro';
 import { PostList } from '@/components/post/PostList';
 import { SERVICES } from '@/data/services';
 import { getPosts } from '@/lib/posts';
@@ -9,23 +11,26 @@ const posts = await getPosts('product');
 ---
 
 <BaseLayout title="Product | 한국일보 기술 블로그">
-  <main class="flex-1">
+  <main id="main" tabindex="-1" class="flex-1">
     <section class="bg-background text-foreground">
-      <div class="page-container py-64 md:py-96">
-        <p class="text-14 font-semibold text-brand-lime">Product</p>
-        <h1 class="mt-20 text-36 font-extrabold tracking-tight md:text-48">
-          한국일보 개발팀이
-          <br />
-          만들고 운영하는 서비스
-        </h1>
-        <p class="mt-20 max-w-520 text-17 text-muted">
-          기사를 쓰는 곳부터 독자가 읽는 곳, 대회 사이트까지 직접 만듭니다.
-        </p>
+      <div class="page-container pt-48 pb-48 md:pt-64 md:pb-64">
+        <!-- 큰 제목은 페이지 심볼 옆에 둔다 -->
+        <div class="flex items-center gap-16 md:gap-24">
+          <IconicMark variant="product" />
+          <div class="min-w-0">
+            <p class="text-14 font-semibold text-brand-lime">Product</p>
+            <h1 class="mt-12 text-36 font-extrabold tracking-tight break-keep md:text-48">
+              한국일보 개발팀이
+              <br />
+              만들고 운영하는 서비스
+            </h1>
+          </div>
+        </div>
       </div>
     </section>
 
     <section class="page-container py-64 md:py-80">
-      <h2 class="text-28 font-bold text-foreground">서비스</h2>
+      <HighlightTitle lead="직접 만들고 운영하는," keyword="서비스" />
       <ul class="mt-24 grid gap-16 md:grid-cols-2">
         {SERVICES.map(({ icon: Icon, kind, name, description }) => (
           <li class="rounded-12 bg-surface p-24 md:p-32">
@@ -39,7 +44,7 @@ const posts = await getPosts('product');
         ))}
       </ul>
 
-      <h2 class="mt-80 mb-24 text-28 font-bold text-foreground">서비스 이야기</h2>
+      <HighlightTitle lead="만들면서 배운 것," keyword="서비스 이야기" class="mt-80 mb-24" />
       <PostList posts={posts} />
     </section>
   </main>

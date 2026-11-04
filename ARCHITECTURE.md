@@ -15,6 +15,7 @@ hk-tech-client/
     ├── layouts/            # BaseLayout: <head>, 헤더·GNB·푸터
     ├── components/<영역>/  # 화면 조각. 영역 폴더 한 단계만 둔다
     │   ├── layout/         # 헤더·GNB·푸터
+    │   ├── brand/          # huick 느낌 공통 조각: 아이코닉 심볼, 형광 밑줄 제목
     │   ├── home/           # 홈 섹션
     │   ├── post/           # 글 목록·글 행·글 페이지 조각
     │   ├── culture/        # 인터뷰 캐러셀
@@ -67,3 +68,14 @@ hk-tech-client/
 - `.ts`·`.tsx`의 import 순서는 Prettier가 정렬한다: react → astro → 외부 패키지 → `@/` → `./`
 - `.astro`의 import는 Prettier가 정렬하지 않는다(astro 플러그인이 frontmatter를 `babel-ts`로 넘기는데 trivago 플러그인은 이 파서를 감싸지 않는다). 같은 순서로 손으로 쓰고, 페이지에서는 `BaseLayout`을 `@/` 가운데 맨 앞에 둔다. 전역 CSS가 컴포넌트 CSS보다 먼저 붙는다.
 - PR을 올리기 전에 `pnpm lint`, `pnpm format:check`, `pnpm check`, `pnpm build`가 통과해야 한다. CI(`.github/workflows/ci.yml`)도 같은 순서로 돌린다.
+
+## 6. 접근성
+
+1. 페이지의 `<main>`에 `id="main" tabindex="-1"`을 붙인다. BaseLayout의 "본문 바로가기"(키보드 첫 Tab)가 여기로 온다.
+2. 페이지마다 `h1`은 하나이고, 헤딩 단계를 건너뛰지 않는다(h1 바로 아래 h3 금지). 글 행·시리즈 카드는 `headingAs`로 맞춘다: 목록 바로 위 제목이 h1이면 `'h2'`, h2면 기본값 `'h3'`. 보이는 제목이 없는 묶음에는 `sr-only` 제목을 둔다(Culture 인터뷰 캐러셀).
+3. 계속 바뀌는 글자(홈 라벨 타자기)는 `aria-hidden`으로 숨기고, 고정된 문구를 `sr-only`로 읽힌다.
+4. 화면 내용을 바꾸는 버튼은 포커스와 알림을 챙긴다. 쪽을 넘기면 포커스를 목록 제목으로 옮기고, 분야 칩으로 거르면 제목 줄(`aria-live`)이 바뀐 제목과 글 수를 읽는다.
+5. 아이콘만 있는 버튼에는 `aria-label`, 아이콘에는 `aria-hidden="true"`를 단다.
+6. 페이지를 고치면 axe(브라우저 확장 axe DevTools 등)로 본다. 남는 경고 2건은 우리 코드 문제가 아니다.
+   - `region`(본문 바로가기): 회사 헤더 링크가 shadow DOM 안에 있어 axe가 바로가기 링크로 알아보지 못한 오탐이다.
+   - `landmark-unique`: 회사 헤더 안 알림 영역(Toastify)이다.

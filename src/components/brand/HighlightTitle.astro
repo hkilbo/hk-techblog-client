@@ -1,0 +1,47 @@
+---
+import { ChevronRight } from '@lucide/astro';
+
+interface Props {
+  /** 핵심어 앞에 붙이는 쉬운 말. huick의 "교과서에선 안 알려주는 세상 이야기, 휙인사이드"처럼 쉼표로 끝낸다 */
+  lead?: string;
+  /** 라임 형광 밑줄을 긋는 핵심어 */
+  keyword: string;
+  /** 있으면 핵심어가 링크가 되고 › 가 붙는다 */
+  href?: string;
+  as?: 'h1' | 'h2';
+  id?: string;
+  class?: string;
+}
+
+const { lead, keyword, href, as: Tag = 'h2', id, class: className } = Astro.props;
+const Keyword = href ? 'a' : 'span';
+const isPageTitle = Tag === 'h1';
+---
+
+<Tag
+  id={id}
+  class:list={[
+    'flex flex-wrap items-center gap-x-6 font-medium break-keep text-foreground',
+    isPageTitle ? 'text-28 tracking-tight md:text-36' : 'text-18 md:text-22',
+    className,
+  ]}
+>
+  <!-- 뒤 공백은 화면에선 gap이 맡고, 스크린리더가 앞말과 핵심어를 띄어 읽게 둔다 -->
+  {lead && <span>{lead} </span>}
+  <Keyword href={href} class="group flex items-center gap-2">
+    <strong
+      class:list={[
+        'font-extrabold underline decoration-accent',
+        isPageTitle ? 'decoration-6 underline-offset-8' : 'decoration-4 underline-offset-6',
+      ]}
+    >
+      {keyword}
+    </strong>
+    {href && (
+      <ChevronRight
+        class="size-20 transition-transform group-hover:translate-x-4 motion-reduce:transition-none"
+        aria-hidden="true"
+      />
+    )}
+  </Keyword>
+</Tag>

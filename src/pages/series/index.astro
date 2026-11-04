@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import HighlightTitle from '@/components/brand/HighlightTitle.astro';
+import IconicMark from '@/components/brand/IconicMark.astro';
 import SeriesCard from '@/components/series/SeriesCard.astro';
 import { getSeriesPosts } from '@/lib/posts';
 import { getAllSeries } from '@/lib/series';
@@ -10,13 +12,16 @@ const counts = await Promise.all(allSeries.map((series) => getSeriesPosts(series
 ---
 
 <BaseLayout title="시리즈 | 한국일보 기술 블로그">
-  <main class="page-container flex-1 py-64 md:py-80">
-    <h1 class="text-28 font-bold text-foreground">시리즈</h1>
-    <p class="mt-8 text-15 text-muted">한 주제를 여러 편에 걸쳐 이어 쓴 글 묶음입니다.</p>
-    <ul class="mt-24 grid gap-32 md:grid-cols-2 lg:grid-cols-3">
+  <main id="main" tabindex="-1" class="page-container flex-1 py-64 md:py-80">
+    <!-- 제목은 TECH 심볼 옆에 둔다 -->
+    <div class="flex items-center gap-16 md:gap-24">
+      <IconicMark />
+      <HighlightTitle as="h1" lead="한 주제를 끝까지 파고든," keyword="시리즈" />
+    </div>
+    <ul class="mt-40 grid gap-32 md:grid-cols-2 lg:grid-cols-3">
       {allSeries.map((series, i) => (
         <li>
-          <SeriesCard series={series} count={counts[i]} />
+          <SeriesCard series={series} count={counts[i]} headingAs="h2" />
         </li>
       ))}
     </ul>

@@ -1,6 +1,7 @@
 ---
 import type { InferGetStaticPropsType } from 'astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import IconicMark from '@/components/brand/IconicMark.astro';
 import { PostItem } from '@/components/post/PostItem';
 import { getSeriesPosts } from '@/lib/posts';
 import { getAllSeries } from '@/lib/series';
@@ -15,12 +16,23 @@ const posts = await getSeriesPosts(series.id);
 ---
 
 <BaseLayout title={`${series.title} | 한국일보 기술 블로그`} description={series.description}>
-  <main class="page-container flex-1 py-64 md:py-80">
-    <a href="/series/" class="text-14 font-semibold text-accent transition-colors hover:text-foreground">
-      시리즈
-    </a>
-    <h1 class="mt-16 text-36 font-extrabold tracking-tight text-foreground md:text-48">{series.title}</h1>
-    <p class="mt-16 max-w-520 text-17 text-muted">{series.description}</p>
+  <main id="main" tabindex="-1" class="page-container flex-1 py-64 md:py-80">
+    <!-- 큰 제목은 TECH 심볼 옆에 둔다 -->
+    <div class="flex items-center gap-16 md:gap-24">
+      <IconicMark />
+      <div class="min-w-0">
+        <a
+          href="/series/"
+          class="block w-fit text-14 font-semibold text-accent transition-colors hover:text-foreground"
+        >
+          시리즈
+        </a>
+        <h1 class="mt-12 text-36 font-extrabold tracking-tight break-keep text-foreground md:text-48">
+          {series.title}
+        </h1>
+      </div>
+    </div>
+    <p class="mt-24 text-17 text-muted">{series.description}</p>
     <p class="mt-16 text-14 text-muted">전체 {posts.length}편</p>
     <ol class="mt-40 flex max-w-896 flex-col gap-32 md:gap-40">
       {posts.map((post, i) => (
@@ -29,7 +41,7 @@ const posts = await getSeriesPosts(series.id);
             {String(i + 1).padStart(2, '0')}
           </span>
           <div class="min-w-0 flex-1">
-            <PostItem post={post} />
+            <PostItem post={post} headingAs="h2" />
           </div>
         </li>
       ))}

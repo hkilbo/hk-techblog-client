@@ -1,0 +1,43 @@
+---
+interface Props {
+  /** lg: 홈 대표 글 옆, md: 각 페이지 제목 옆 */
+  size?: 'md' | 'lg';
+  /** 카테고리 페이지 전용 심볼(public/brand/hk-techblog-<variant>.svg). 없으면 기본 TECH 심볼 */
+  variant?: 'tech' | 'product' | 'culture';
+}
+
+const { size = 'md', variant } = Astro.props;
+const large = size === 'lg';
+---
+
+<!-- huick의 서브 브랜드 로고처럼 제목 옆에 두는 아이코닉한 심볼. 손으로 두 번 휘갈긴 고리를 붙였다 -->
+<!-- shrink-0: 제목 옆(flex)에 둘 때 긴 제목에 밀려 작아지지 않게 한다 -->
+<div class="relative w-fit shrink-0">
+  <img
+    src={variant ? `/brand/hk-techblog-${variant}.svg` : '/brand/hk-techblog-symbol.svg'}
+    alt=""
+    width="512"
+    height="512"
+    class:list={[
+      'transition-transform motion-reduce:transition-none',
+      // 카테고리 심볼은 SVG 안에서 이미 7도 기울어 있다. 올리면 똑바로 선다
+      variant ? 'hover:-rotate-7' : '-rotate-6 hover:rotate-0',
+      large ? 'w-140 md:w-200' : 'w-96 md:w-120',
+    ]}
+  />
+  <!-- 모바일에서 화면 밖으로 넘치지 않게 왼쪽으로 덜 뺀다 -->
+  <span
+    aria-hidden="true"
+    class:list={[
+      'pointer-events-none absolute -top-8 -left-8 -rotate-12 rounded-[50%] border-2 border-foreground/70',
+      large ? 'h-48 w-88 md:-left-24' : 'h-32 w-64 md:-left-16',
+    ]}
+  ></span>
+  <span
+    aria-hidden="true"
+    class:list={[
+      'pointer-events-none absolute -top-4 -left-4 rotate-6 rounded-[50%] border-2 border-foreground/40',
+      large ? 'h-40 w-80 md:-left-16' : 'h-28 w-56 md:-left-12',
+    ]}
+  ></span>
+</div>

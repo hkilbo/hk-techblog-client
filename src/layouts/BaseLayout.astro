@@ -29,6 +29,13 @@ const {
     <link rel="preload" href="/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body class="flex min-h-full flex-col pt-64 xl:pt-76">
+    <!-- 키보드 첫 Tab. 헤더·GNB를 건너뛰어 페이지의 <main id="main">으로 간다 -->
+    <a
+      href="#main"
+      class="sr-only rounded-full bg-brand-lime text-14 font-semibold text-background focus:not-sr-only focus:fixed focus:top-12 focus:left-12 focus:z-700 focus:px-16 focus:py-8"
+    >
+      본문 바로가기
+    </a>
     <Header />
     <Gnb />
     <slot />
