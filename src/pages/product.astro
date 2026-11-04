@@ -1,7 +1,9 @@
 ---
+import { Ellipsis } from '@lucide/astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import HighlightTitle from '@/components/brand/HighlightTitle.astro';
 import IconicMark from '@/components/brand/IconicMark.astro';
+import HaiSearchCard from '@/components/product/HaiSearchCard.astro';
 import { PostList } from '@/components/post/PostList';
 import { SERVICES } from '@/data/services';
 import { getPosts } from '@/lib/posts';
@@ -18,8 +20,7 @@ const posts = await getPosts('product');
         <div class="flex items-center gap-16 md:gap-24">
           <IconicMark variant="product" />
           <div class="min-w-0">
-            <p class="text-14 font-semibold text-brand-lime">Product</p>
-            <h1 class="mt-12 text-36 font-extrabold tracking-tight break-keep md:text-48">
+            <h1 class="text-36 font-extrabold tracking-tight break-keep md:text-48">
               한국일보 개발팀이
               <br />
               만들고 운영하는 서비스
@@ -31,7 +32,11 @@ const posts = await getPosts('product');
 
     <section class="page-container py-64 md:py-80">
       <HighlightTitle lead="직접 만들고 운영하는," keyword="서비스" />
-      <ul class="mt-24 grid gap-16 md:grid-cols-2">
+      <!-- 대표 서비스(H.AI)를 한 줄 전체로, 나머지는 카드로. 모두 적지 않고 마지막 카드로 묶는다 -->
+      <ul class="mt-24 grid gap-16 md:grid-cols-2 lg:grid-cols-3">
+        <li class="md:col-span-2 lg:col-span-3">
+          <HaiSearchCard />
+        </li>
         {SERVICES.map(({ icon: Icon, kind, name, description }) => (
           <li class="rounded-12 bg-surface p-24 md:p-32">
             <p class="flex items-center gap-8 text-12 font-extrabold text-muted">
@@ -42,6 +47,17 @@ const posts = await getPosts('product');
             <p class="mt-8 text-15">{description}</p>
           </li>
         ))}
+        <li class="rounded-12 border border-dashed border-line p-24 md:p-32">
+          <p class="flex items-center gap-8 text-12 font-extrabold text-muted">
+            <Ellipsis class="size-20 text-foreground" stroke-width={1.75} aria-hidden="true" />
+            그리고
+          </p>
+          <h3 class="mt-16 text-22 font-bold text-foreground">이 밖의 서비스</h3>
+          <p class="mt-8 text-15">
+            뉴스룸 안팎에서 쓰는 서비스와 내부 도구가 더 있습니다. 모두 소개하기는 어려워서, 공개할 수 있는 이야기부터
+            아래 서비스 이야기에 씁니다.
+          </p>
+        </li>
       </ul>
 
       <HighlightTitle lead="만들면서 배운 것," keyword="서비스 이야기" class="mt-80 mb-24" />

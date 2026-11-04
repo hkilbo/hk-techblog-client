@@ -1,0 +1,45 @@
+---
+import { ArrowUp, Mic, Search, Sparkles } from '@lucide/astro';
+
+// Product의 대표 서비스 카드. 한국일보 홈페이지(hk-home-client)의 H.AI 대화형 검색을 소개하고, 자동검색 화면을 간단히 그린다.
+// 그림은 장식이라 스크린리더는 건너뛴다(aria-hidden). 공개 주소가 정해지면 제목에 링크를 단다
+---
+
+<article class="grid gap-32 rounded-12 bg-surface p-24 md:p-32 lg:grid-cols-2 lg:items-center lg:gap-48">
+  <div>
+    <p class="flex items-center gap-8 text-12 font-extrabold text-muted">
+      <Sparkles class="size-20 text-foreground" stroke-width={1.75} aria-hidden="true" />
+      AI 검색
+    </p>
+    <h3 class="mt-16 text-22 font-bold text-foreground md:text-28">H.AI 대화형 검색</h3>
+    <p class="mt-8 text-15">
+      궁금한 것을 대화하듯 물으면 H.AI가 질문을 분석해 알맞은 기사를 고르고 요약해 드려요. 한국일보 홈페이지의 대표
+      기능입니다.
+    </p>
+  </div>
+
+  <div aria-hidden="true" class="rounded-12 bg-background px-20 py-32 md:px-32 md:py-40">
+    <p class="mx-auto flex h-32 w-fit items-center gap-8 rounded-full bg-accent px-16 text-14 font-bold text-background">
+      <Search class="size-16" stroke-width={2} />
+      자동검색
+    </p>
+    <div class="mt-16 flex items-center gap-8 rounded-full bg-foreground py-8 pr-8 pl-24 text-background">
+      <span class="min-w-0 flex-1 truncate text-16 md:text-17">기후플레이션 대비</span>
+      <span class="flex size-40 shrink-0 items-center justify-center rounded-full border border-background/20">
+        <Mic class="size-20" stroke-width={1.75} />
+      </span>
+      <span class="flex size-40 shrink-0 items-center justify-center rounded-full bg-background text-foreground">
+        <ArrowUp class="size-20" stroke-width={1.75} />
+      </span>
+    </div>
+    <!-- 결과 자리: 기사 두 줄 + 썸네일 -->
+    <div class="mt-32 flex gap-16">
+      <div class="flex flex-1 flex-col gap-12">
+        <span class="h-16 rounded-8 bg-surface"></span>
+        <span class="h-16 w-3/4 rounded-8 bg-surface"></span>
+        <span class="h-16 w-1/2 rounded-8 bg-surface"></span>
+      </div>
+      <span class="h-64 w-96 shrink-0 rounded-8 bg-surface md:w-120"></span>
+    </div>
+  </div>
+</article>
