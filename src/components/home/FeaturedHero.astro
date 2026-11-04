@@ -1,6 +1,5 @@
 ---
 import { ChevronRight, Sparkle } from '@lucide/astro';
-import IconicMark from '@/components/brand/IconicMark.astro';
 import { CATEGORY_LABEL } from '@/data/categories';
 import type { Post } from '@/lib/posts';
 
@@ -15,7 +14,8 @@ const href = `/posts/${post.id}/`;
 
 <section class="page-container grid gap-48 py-48 md:grid-cols-[5fr_7fr] md:items-center md:gap-56 md:py-80">
   <div>
-    <IconicMark size="lg" />
+    <!-- 홈 대표 그림(한국일보 TECH). 선마다 흰 테두리가 받쳐 줘서 검정 바탕에서도 그대로 보인다. 글 제목이 h1·h2라 그림은 장식(alt 없음) -->
+    <img src="/brand/hk-techblog-hero.svg" alt="" width="800" height="800" class="-ml-16 w-220 md:-ml-20 md:w-280" />
     <p class="mt-24 text-12 font-extrabold text-accent uppercase md:text-14">{CATEGORY_LABEL[post.category]}</p>
     <h2 class="mt-8 line-clamp-3 text-28 font-extrabold tracking-tight text-foreground md:text-36">
       <a href={href} class="transition-colors hover:text-accent">
