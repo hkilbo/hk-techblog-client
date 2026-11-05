@@ -213,7 +213,11 @@ build job이 실패하면 deploy job은 돌지 않고, 사이트는 직전에 �
 1. **Pages 켜기**: Settings → Pages → Build and deployment의 Source를 `GitHub Actions`로 바꾼다. 비공개 저장소에서 Pages를 쓰려면 조직이 GitHub Team 이상 플랜이어야 한다.
 2. **도메인 연결**: 사내 DNS에 `tech.hankookilbo.com` → `hkilbo.github.io` CNAME 레코드를 추가한다. 그다음 Settings → Pages → Custom domain에 `tech.hankookilbo.com`을 넣고 Enforce HTTPS를 켠다. GitHub Actions로 배포하므로 `public/`에 CNAME 파일은 두지 않는다. 연결 전까지는 `https://hkilbo.github.io/hk-techblog-client/blog/`에서 열리고, 연결하면 `https://tech.hankookilbo.com/blog/`가 된다([사이트 주소와 /blog](#사이트-주소와-blog)).
 3. **main 보호**(권장): 브랜치 보호 규칙으로 main에 직접 push하지 못하게 막고, CI의 `check` job 통과를 머지 조건으로 건다.
-4. **댓글 켜기**(선택): 댓글은 GitHub Discussions 기반의 giscus로 받는다. 글마다 글 id로 스레드 하나가 생긴다.
-   1. 저장소 Settings → General → Features에서 Discussions를 켜고, Discussions 탭에서 `Comments` 카테고리를 만든다(형식은 Announcement. 그래야 giscus만 스레드를 만들고 아무나 새 글을 못 올린다).
+4. **댓글 켜기**: 댓글은 GitHub Discussions 기반의 giscus로 받는다. 글마다 글 id로 스레드 하나가 생기고, 처음 댓글이 달릴 때 Discussions의 `Announcements` 카테고리에 만들어진다. 이미 설정돼 있고, 저장소를 옮기거나 카테고리를 바꿀 때만 다시 한다.
+   1. 저장소 Settings → General → Features에서 Discussions를 켠다. 기본 카테고리 `Announcements`를 쓴다(이 형식은 giscus만 스레드를 만들고 아무나 새 글을 못 올린다).
    2. [giscus 앱](https://github.com/apps/giscus)을 이 저장소에 설치한다.
-   3. https://giscus.app 에 저장소 이름을 넣고 카테고리를 `Comments`로 고르면 나오는 `data-category-id` 값을 `src/components/post/Giscus.astro`의 `GISCUS.categoryId`에 넣는다(`repoId`는 이미 들어 있다). 비어 있는 동안은 댓글 자리에 "댓글은 준비 중이에요."만 보인다.
+   3. 저장소 id와 카테고리 id를 읽어 `src/components/post/Giscus.astro`의 `GISCUS`에 넣는다. 비어 있는 동안은 댓글 자리에 "댓글은 준비 중이에요."만 보인다.
+      ```bash
+      gh api repos/hkilbo/hk-techblog-client --jq .node_id
+      gh api graphql -f query='{ repository(owner:"hkilbo", name:"hk-techblog-client") { discussionCategories(first:20) { nodes { name id } } } }'
+      ```
