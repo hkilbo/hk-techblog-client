@@ -1,12 +1,19 @@
 ---
+interface Props {
+  /** 댓글 스레드를 묶는 글 id(폴더 이름). 주소가 아니라 id로 묶어 github.io·tech.hankookilbo.com 어디서 열어도 같은 스레드다 */
+  term: string;
+}
+
+const { term } = Astro.props;
+
 // giscus(GitHub Discussions)로 댓글과 반응을 받는다. 반응(이모지)이 Next 버전의 좋아요를 대신한다.
-// repoId·categoryId는 저장소를 공개로 바꾸고 Discussions를 켠 뒤 https://giscus.app 에서 받아 넣는다(README.md '처음 한 번 설정하기').
-// 비어 있으면 댓글 영역은 안내 문구만 보인다
+// repoId는 저장소 node_id, categoryId는 Discussions의 Announcements 카테고리 id다(README.md '처음 한 번 설정하기'의 명령으로
+// 읽는다). Announcements 형식이라 giscus만 스레드를 만들고 아무나 새 글을 못 올린다. 비어 있으면 안내 문구만 보인다
 const GISCUS = {
-  repo: 'hkilbo/hk-tech-client',
-  repoId: '',
-  category: 'Comments',
-  categoryId: '',
+  repo: 'hkilbo/hk-techblog-client',
+  repoId: 'R_kgDOViRDXA',
+  category: 'Announcements',
+  categoryId: 'DIC_kwDOViRDXM4DKa7O',
 };
 const ready = Boolean(GISCUS.repoId && GISCUS.categoryId);
 ---
@@ -18,7 +25,7 @@ const ready = Boolean(GISCUS.repoId && GISCUS.categoryId);
   {ready ? <div data-giscus class="mt-24" /> : <p class="mt-16 text-14 text-muted">댓글은 준비 중이에요.</p>}
 </section>
 
-{ready && <script is:inline define:vars={{ config: GISCUS }}>
+{ready && <script is:inline define:vars={{ config: GISCUS, term }}>
   const script = document.createElement('script');
   script.src = 'https://giscus.app/client.js';
   script.async = true;
@@ -28,13 +35,16 @@ const ready = Boolean(GISCUS.repoId && GISCUS.categoryId);
     'data-repo-id': config.repoId,
     'data-category': config.category,
     'data-category-id': config.categoryId,
-    'data-mapping': 'pathname',
+    // 글 id로 스레드를 찾는다. 'pathname'이면 base·도메인이 다른 환경마다 스레드가 갈라진다
+    'data-mapping': 'specific',
+    'data-term': term,
     'data-strict': '1',
     'data-reactions-enabled': '1',
     'data-emit-metadata': '0',
     'data-input-position': 'top',
     'data-lang': 'ko',
     'data-theme': 'dark',
+    'data-loading': 'lazy',
   };
   for (const [name, value] of Object.entries(attributes)) script.setAttribute(name, value);
   document.querySelector('[data-giscus]').append(script);

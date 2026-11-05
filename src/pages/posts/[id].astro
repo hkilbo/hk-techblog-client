@@ -62,7 +62,7 @@ const toc = headings.filter((heading) => heading.depth === 2);
             <Content />
           </div>
 
-          <Giscus />
+          <Giscus term={post.id} />
         </div>
 
         {toc.length > 0 && (
