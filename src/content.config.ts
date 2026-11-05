@@ -21,7 +21,7 @@ const posts = defineCollection({
       author: z.object({ name: z.string(), role: z.string() }),
       publishedAt: z.coerce.date(),
       readingMinutes: z.number().int().positive(),
-      /** 글 폴더의 사진(./cover.jpg) 또는 사진 주소. 주소는 astro.config의 image.domains에 있는 곳만 줄여 준다 */
+      /** 글 폴더의 사진(./cover.jpg) 또는 사진 주소. 주소로 넣으면 그 도메인을 astro.config의 image.domains에 더해야 줄여 준다 */
       cover: z.union([z.url(), image()]),
     }),
 });
