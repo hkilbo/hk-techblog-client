@@ -18,12 +18,18 @@ export async function getStaticPaths() {
 const { post } = Astro.props as InferGetStaticPropsType<typeof getStaticPaths>;
 const result = await renderPost(post.id);
 if (!result) throw new Error(`글이 없습니다: ${post.id}`); // getStaticPaths가 있는 글만 넘기므로 생기면 빌드 버그다
-const { Content, headings } = result;
+const { Content, headings, ogImage } = result;
 const related = await getRelatedPosts(post);
 const toc = headings.filter((heading) => heading.depth === 2);
 ---
 
-<BaseLayout title={`${post.title} | 한국일보 기술 블로그`} description={post.summary}>
+<BaseLayout
+  title={`${post.title} | 한국일보 기술 블로그`}
+  description={post.summary}
+  image={ogImage}
+  type="article"
+  publishedAt={post.publishedAt}
+>
   <main id="main" tabindex="-1" class="flex-1">
     <article class="page-container py-48 md:py-64">
       <div class="lg:grid lg:grid-cols-[minmax(0,896px)_224px] lg:justify-between lg:gap-40">
