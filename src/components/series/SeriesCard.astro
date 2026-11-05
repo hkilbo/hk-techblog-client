@@ -1,5 +1,6 @@
 ---
 import type { Series } from '@/lib/series';
+import { seriesPath } from '@/lib/paths';
 
 interface Props {
   series: Series;
@@ -12,7 +13,7 @@ const { series, count, headingAs: Heading = 'h3' } = Astro.props;
 ---
 
 <!-- 시리즈 카드. 관련 글 카드(PostCard)처럼 테두리 없이 16:9 표지 아래에 글이 온다 -->
-<a href={`/series/${series.id}/`} class="group block">
+<a href={seriesPath(series.id)} class="group block">
   <div class="relative aspect-video overflow-hidden rounded-12">
     <img
       src={series.cover}

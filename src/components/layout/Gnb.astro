@@ -1,9 +1,11 @@
 ---
+import { withBase } from '@/lib/paths';
+
 const MENUS = [
-  { label: 'Home', href: '/' },
-  { label: 'Tech', href: '/tech/' },
-  { label: 'Product', href: '/product/' },
-  { label: 'Culture', href: '/culture/' },
+  { label: 'Home', href: withBase('/') },
+  { label: 'Tech', href: withBase('/tech/') },
+  { label: 'Product', href: withBase('/product/') },
+  { label: 'Culture', href: withBase('/culture/') },
   // Apply는 블로그 안 페이지가 아니라 한국일보 그룹 채용 홈페이지로 바로 간다. 채용 링크는 여기 하나만 둔다
   { label: 'Apply', href: 'https://hankookilbo.careerlink.kr/' },
 ];

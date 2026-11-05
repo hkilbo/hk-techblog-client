@@ -1,5 +1,6 @@
 ---
 import { POST_CATEGORIES } from '@/data/categories';
+import { withBase } from '@/lib/paths';
 
 // 404·에러 일러스트의 알약 스티커를 옮겨 왔다. 기울기와 색은 순서대로 돌려 쓴다
 const STICKERS = [
@@ -15,7 +16,7 @@ const STICKERS = [
     {POST_CATEGORIES.map(({ value, label }, i) => (
       <li>
         <a
-          href={`/${value}/`}
+          href={withBase(`/${value}/`)}
           class:list={[
             'flex h-56 items-center rounded-full px-28 text-20 font-extrabold uppercase transition-transform hover:scale-105 hover:rotate-0 motion-reduce:transition-none md:h-72 md:px-40 md:text-28',
             STICKERS[i % STICKERS.length],
