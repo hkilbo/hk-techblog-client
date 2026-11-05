@@ -9,7 +9,7 @@ interface Props {
 
 // 홈 첫 화면. huick처럼 왼쪽에 아이코닉한 심볼 + 대표 글(가장 최근 글), 오른쪽에 썸네일 + 기울인 스티커
 const { post } = Astro.props;
-const href = `/posts/${post.id}/`;
+const href = `/blog/${post.id}/`;
 ---
 
 <section class="page-container grid gap-48 py-48 md:grid-cols-[5fr_7fr] md:items-center md:gap-56 md:py-80">

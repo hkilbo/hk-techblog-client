@@ -2,7 +2,7 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { defineCollection, reference } from 'astro:content';
 
-// 글은 content/posts/<id>/index.md(x). 폴더 이름이 id이고 주소 /posts/<id>/가 된다.
+// 글은 content/posts/<id>/index.md(x). 폴더 이름이 id이고 주소 /blog/<id>/가 된다.
 // frontmatter가 이 스키마와 다르면 빌드가 실패하고 배포되지 않는다.
 const posts = defineCollection({
   loader: glob({ base: './content/posts', pattern: '**/index.{md,mdx}' }),

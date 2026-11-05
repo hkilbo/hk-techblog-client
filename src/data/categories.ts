@@ -4,10 +4,18 @@ import type { PostCategory, TechTopic } from '@/lib/posts';
 
 export const CATEGORY_LABEL: Record<PostCategory, string> = { tech: 'Tech', product: 'Product', culture: 'Culture' };
 
-/** GNB·카테고리 띠지 순서. 주소는 /<category>/ (src/pages/<category>.astro) */
+/** 카테고리 목록 페이지 주소. Tech 글은 /blog/에 모은다(tech.hankookilbo.com/blog) */
+export const CATEGORY_HREF: Record<PostCategory, string> = {
+  tech: '/blog/',
+  product: '/product/',
+  culture: '/culture/',
+};
+
+/** 카테고리 띠지 순서 */
 export const POST_CATEGORIES = (Object.keys(CATEGORY_LABEL) as PostCategory[]).map((value) => ({
   value,
   label: CATEGORY_LABEL[value],
+  href: CATEGORY_HREF[value],
 }));
 
 export const TOPIC_LABEL: Record<TechTopic, string> = {

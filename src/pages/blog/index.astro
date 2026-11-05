@@ -8,12 +8,12 @@ import { getPosts } from '@/lib/posts';
 const posts = await getPosts('tech');
 ---
 
-<BaseLayout title="Tech | 한국일보 기술 블로그">
+<BaseLayout title="Blog | 한국일보 기술 블로그">
   <main id="main" tabindex="-1" class="page-container flex-1 pt-48 pb-64 md:pt-64 md:pb-80">
     <!-- 제목은 페이지 심볼 옆에 둔다 -->
     <div class="mb-40 flex items-center gap-16 md:mb-48 md:gap-24">
-      <IconicMark variant="tech" />
-      <HighlightTitle as="h1" lead="뉴스를 만드는 기술," keyword="Tech" />
+      <IconicMark variant="blog" />
+      <HighlightTitle as="h1" lead="뉴스를 만드는 기술," keyword="Blog" />
     </div>
     <PostFeed client:load posts={posts} title="전체 글" withHomeLink />
   </main>

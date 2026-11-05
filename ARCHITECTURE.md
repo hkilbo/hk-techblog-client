@@ -7,7 +7,7 @@ Astro로 만든 정적 사이트다(GitHub Pages 배포). 페이지가 몇 개 �
 ```
 hk-tech-client/
 ├── content/                # 글과 시리즈. 글을 쓸 때는 여기만 고친다
-│   ├── posts/<id>/         # index.md(frontmatter + 본문) + cover.jpg. 폴더 이름이 주소 /posts/<id>/
+│   ├── posts/<id>/         # index.md(frontmatter + 본문) + cover.jpg. 폴더 이름이 주소 /blog/<id>/
 │   └── series/<id>.yaml
 ├── public/                 # 그대로 복사된다: CNAME, favicon, 폰트, 로고 SVG
 └── src/

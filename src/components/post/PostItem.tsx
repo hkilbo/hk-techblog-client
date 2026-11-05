@@ -7,7 +7,7 @@ import type { Post } from '@/lib/posts';
  */
 export function PostItem({ post, headingAs: Heading = 'h3' }: { post: Post; headingAs?: 'h2' | 'h3' }) {
   return (
-    <a href={`/posts/${post.id}/`} className="group flex items-start gap-16 md:gap-20">
+    <a href={`/blog/${post.id}/`} className="group flex items-start gap-16 md:gap-20">
       <div className="min-w-0 flex-1">
         <p className="text-12 font-extrabold text-muted uppercase md:text-14">
           {CATEGORY_LABEL[post.category]}

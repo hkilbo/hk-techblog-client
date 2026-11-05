@@ -8,7 +8,7 @@ export type TechTopic = 'frontend' | 'backend' | 'ai-db' | 'cloud';
 
 /** 화면이 쓰는 글 모양. content/posts의 frontmatter를 getPosts가 이 모양으로 바꾼다(스키마는 src/content.config.ts) */
 export interface Post {
-  /** 주소 /posts/<id>/에 쓴다. 글 폴더 이름이다 */
+  /** 주소 /blog/<id>/에 쓴다. 글 폴더 이름이다 */
   id: string;
   title: string;
   summary: string;
