@@ -48,6 +48,8 @@ export default defineConfig({
   outDir: `./dist${BLOG_PATH}`,
   integrations: [mdx(), react(), rootRedirect()],
   vite: { plugins: [tailwindcss()] },
+  // SVG 표지로 공유 미리보기(JPG)를 만들려면 SVG를 그려야 한다. 그리는 SVG는 저장소에 올린 글 표지뿐이라(원격 이미지 없음) 켠다
+  image: { dangerouslyProcessSVG: true },
   markdown: {
     shikiConfig: { theme: 'github-dark' },
   },
