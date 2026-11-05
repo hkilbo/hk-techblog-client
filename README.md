@@ -17,7 +17,7 @@
 2. `content/posts/` 아래에 글 폴더를 만든다. 폴더 이름이 글 주소 `/posts/<폴더 이름>/`가 되므로 영문 소문자와 하이픈으로 짓는다.
 3. 글 폴더에 `index.md`와 표지 이미지 `cover.jpg`를 넣는다.
 4. `index.md` 맨 위에 [frontmatter](#frontmatter-쓰기)를 쓰고, 그 아래에 [본문](#본문-쓰기)을 쓴다.
-5. `pnpm dev`로 띄워 `http://localhost:4321/posts/<폴더 이름>/`에서 확인한다.
+5. `pnpm dev`로 띄워 `http://localhost:4321/blog/<폴더 이름>/`에서 확인한다.
 6. PR을 올린다. CI가 통과하고 리뷰를 받으면 main에 머지한다.
 
 ```

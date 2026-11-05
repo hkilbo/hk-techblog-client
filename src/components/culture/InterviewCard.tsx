@@ -3,7 +3,7 @@ import type { Post } from '@/lib/posts';
 // 인터뷰 캐러셀 카드. 벽에 건 거울처럼 카드 안에 3:4 조약돌 모양(rounded-pebble) 사람 사진을 두고, 아래에 사람 라벨·제목·날짜
 export function InterviewCard({ post }: { post: Post }) {
   return (
-    <a href={`/posts/${post.id}/`} className="group block h-full rounded-16 bg-background p-24">
+    <a href={`/blog/${post.id}/`} className="group block h-full rounded-16 bg-background p-24">
       <div className="relative aspect-3/4 overflow-hidden rounded-pebble">
         <img
           src={post.thumbnail}
