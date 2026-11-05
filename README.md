@@ -14,9 +14,9 @@
 ## 글 올리기
 
 1. main에서 브랜치를 만든다.
-2. `content/posts/` 아래에 글 폴더를 만든다. 폴더 이름이 글 주소 `/posts/<폴더 이름>/`가 되므로 영문 소문자와 하이픈으로 짓는다.
+2. `content/posts/` 아래에 글 폴더를 만든다. 폴더 이름이 글 주소 `/blog/posts/<폴더 이름>/`가 되므로 영문 소문자와 하이픈으로 짓는다. 올린 뒤에는 이름을 바꾸지 않는다(주소와 댓글 스레드가 바뀐다).
 3. 글 폴더에 `index.md`와 표지 이미지 `cover.jpg`를 넣는다.
-4. `index.md` 맨 위에 [frontmatter](#frontmatter-쓰기)를 쓰고, 그 아래에 [본문](#본문-쓰기)을 쓴다.
+4. `index.md`에 [글 틀](#글-틀)을 붙여 넣고, [frontmatter](#frontmatter-쓰기)와 [본문](#본문-쓰기)을 고친다.
 5. `pnpm dev`로 띄워 `http://localhost:4321/blog/posts/<폴더 이름>/`에서 확인한다.
 6. PR을 올린다. CI가 통과하고 리뷰를 받으면 main에 머지한다.
 
@@ -27,27 +27,43 @@ content/posts/my-first-post/
 └── diagram.png    # 본문 이미지(필요할 때)
 ```
 
-머지하면 Deploy 워크플로가 끝나는 대로 사이트에 반영된다. 진행 상황은 저장소의 Actions 탭에서 본다. 홈 글 목록과 RSS(`/rss.xml`)에는 자동으로 들어간다.
+머지하면 Deploy 워크플로가 끝나는 대로 사이트에 반영된다. 진행 상황은 저장소의 Actions 탭에서 본다. 홈 글 목록과 RSS(`/blog/rss.xml`)에는 자동으로 들어간다.
 
 초안 기능은 없다. main에 머지한 글은 바로 공개된다.
 
-### frontmatter 쓰기
+### 글 틀
 
-frontmatter는 `index.md` 맨 위 `---` 사이에 쓰는 글 정보다.
+새 글은 이 틀을 `index.md`에 붙여 넣고 고친다. 저장소에 예시 글을 두지 않으므로 이 틀이 기준이다.
 
-```yaml
+````md
 ---
 title: "글 제목"
-summary: "글 목록에 보이는 한두 줄 요약"
+summary: "글 목록과 공유 미리보기에 보이는 한두 줄 요약"
 category: tech
 topic: frontend
 tags: ["Astro", "GitHub Actions"]
 author: { name: "이름", role: "Frontend Engineer" }
-publishedAt: 2026-11-04
+publishedAt: 2026-11-05
 readingMinutes: 8
 cover: ./cover.jpg
 ---
+
+첫 문단은 소제목 없이 바로 쓴다.
+
+## 첫 번째 소제목
+
+본문. 소제목(`##`)이 글 오른쪽 목차에 나온다.
+
+![그림 설명](./diagram.png)
+
+```ts
+const hello = 'world';
 ```
+````
+
+### frontmatter 쓰기
+
+frontmatter는 `index.md` 맨 위 `---` 사이에 쓰는 글 정보다([글 틀](#글-틀)의 윗부분).
 
 | 필드             | 필수      | 값                                                                   |
 | ---------------- | --------- | -------------------------------------------------------------------- |
@@ -58,9 +74,9 @@ cover: ./cover.jpg
 | `tags`           | 선택      | 문자열 배열                                                          |
 | `author`         | 필수      | `{ name, role }`. 인터뷰 글이면 인터뷰한 사람                        |
 | `publishedAt`    | 필수      | 발행일. `YYYY-MM-DD`                                                 |
-| `readingMinutes` | 필수      | 읽는 시간(분). 자동으로 계산하지 않으므로 직접 적는다                |
-| `cover`          | 필수      | 표지 이미지 경로. 글 폴더에 두면 `./cover.jpg`                       |
-| `kind`           | 선택      | 개발자 인터뷰 글이면 `interview`                                     |
+| `readingMinutes` | 필수      | 읽는 시간(분). 자동으로 계산하지 않으므로 직접 적는다. 공백을 뺀 본문 글자 수 ÷ 500을 올림한다 |
+| `cover`          | 필수      | 표지 이미지 경로. 글 폴더에 두면 `./cover.jpg`. 가로 1200px 이상이 좋다(글 목록 썸네일과 공유 미리보기 1200×630에 쓰인다) |
+| `kind`           | 선택      | 개발자 인터뷰 글이면 `interview`. Culture 첫 화면 인터뷰 캐러셀에 나오고, 표지는 세로 3:4 사람 사진이 카드에 맞는다 |
 | `series`         | 선택      | 시리즈 글이면 `{ id, order }`. [시리즈로 묶기](#시리즈로-묶기) 참고  |
 
 형식은 `src/content.config.ts`가 정한다. 필수 필드가 빠지거나, 정해진 값이 아니거나, `cover` 파일이 없으면 빌드가 실패한다. 그런 PR은 CI를 통과하지 못한다.
@@ -70,6 +86,7 @@ cover: ./cover.jpg
 - 소제목은 `##`로 쓴다. `##` 소제목이 글 오른쪽 목차에 나온다. 글 제목(`title`)이 이미 h1이므로 `#`은 쓰지 않는다.
 - 이미지는 글 폴더에 넣고 `![설명](./diagram.png)`처럼 상대 경로로 쓴다. 빌드할 때 Astro가 이미지를 최적화한다.
 - 코드 블록에는 언어를 적는다(예: ` ```ts `). 언어 이름이 코드 블록 오른쪽 위에 나온다.
+- 다른 글로 가는 링크는 `../<폴더 이름>/`처럼 상대 경로로 쓴다. `/blog/posts/…`로 쓰면 도메인을 연결하기 전 주소(`hkilbo.github.io/hk-techblog-client/blog/`)에서 깨진다.
 - MDX 문법이 필요하면 `index.md` 대신 `index.mdx`로 쓴다.
 
 ### 시리즈로 묶기

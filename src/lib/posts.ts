@@ -1,4 +1,4 @@
-import { getImage } from 'astro:assets';
+import { getImage, inferRemoteSize } from 'astro:assets';
 import { type CollectionEntry, getCollection, getEntry, render } from 'astro:content';
 
 export type PostCategory = 'tech' | 'product' | 'culture';
@@ -56,10 +56,27 @@ export function getPosts(category?: PostCategory): Promise<Post[]> {
   return allPosts.then((posts) => (category ? posts.filter((post) => post.category === category) : [...posts]));
 }
 
-/** 없는 id면 undefined. 글 페이지의 본문(Content)과 목차용 소제목(headings) */
+const OG_RATIO = 1200 / 630;
+
+/**
+ * 공유 미리보기 이미지. 카카오톡이 webp를 못 읽을 수 있어 JPG로 만든다.
+ * 원본보다 키우지 않고 1.91:1로 가장 크게(최대 1200×630) 자르므로, 요청한 크기가 곧 파일 크기다(og:image:width·height)
+ */
+async function toOgImage(cover: CollectionEntry<'posts'>['data']['cover']) {
+  const source = typeof cover === 'string' ? await inferRemoteSize(cover) : cover;
+  const height = Math.min(630, source.height, Math.floor(source.width / OG_RATIO));
+  const width = Math.round(height * OG_RATIO);
+  // attention: 사람 얼굴처럼 눈에 띄는 곳을 남기고 자른다(인터뷰 세로 사진)
+  const image = await getImage({ src: cover, width, height, fit: 'cover', position: 'attention', format: 'jpg' });
+  return { src: image.src, width, height };
+}
+
+/** 없는 id면 undefined. 글 페이지의 본문(Content), 목차용 소제목(headings), 공유 미리보기 이미지(ogImage) */
 export async function renderPost(id: string) {
   const entry = await getEntry('posts', id);
-  return entry && render(entry);
+  if (!entry) return undefined;
+  const [rendered, ogImage] = await Promise.all([render(entry), toOgImage(entry.data.cover)]);
+  return { ...rendered, ogImage };
 }
 
 /** 같은 카테고리 글을 먼저, 모자라면 다른 글로 채워 최신순 3개 */
