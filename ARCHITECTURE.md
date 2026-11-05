@@ -7,9 +7,10 @@ Astro로 만든 정적 사이트다(GitHub Pages 배포). 페이지가 몇 개 �
 ```
 hk-tech-client/
 ├── content/                # 글과 시리즈. 글을 쓸 때는 여기만 고친다
-│   ├── posts/<id>/         # index.md(frontmatter + 본문) + cover.jpg. 폴더 이름이 주소 /blog/<id>/
+│   ├── posts/<id>/         # index.md(frontmatter + 본문) + cover.jpg. 폴더 이름이 주소 /posts/<id>/
 │   └── series/<id>.yaml
-├── public/                 # 그대로 복사된다: CNAME, favicon, 폰트, 로고 SVG
+├── env/                    # 배포 주소별 환경값(.env.gh). pnpm dev:gh 같은 :gh 명령이 읽는다
+├── public/                 # 그대로 복사된다: favicon, 로고 SVG. 주소는 withBase로 쓴다
 └── src/
     ├── pages/              # 라우트 = 페이지. 페이지 마크업을 여기에 바로 쓴다
     ├── layouts/            # BaseLayout: <head>, 헤더·GNB·푸터
@@ -20,9 +21,9 @@ hk-tech-client/
     │   ├── post/           # 글 목록·글 행·글 페이지 조각
     │   ├── culture/        # 인터뷰 캐러셀
     │   └── series/         # 시리즈 카드
-    ├── lib/                # 데이터 읽기와 헬퍼: posts.ts, series.ts, fetchHtmlFragment.ts
+    ├── lib/                # 데이터 읽기와 헬퍼: posts.ts, series.ts, paths.ts, fetchHtmlFragment.ts
     ├── data/               # 고정 목록·상수: 카테고리, Product 서비스, Culture 복지
-    ├── assets/             # 빌드 때 최적화할 이미지
+    ├── assets/             # 빌드 때 최적화할 이미지와 Pretendard 폰트
     ├── styles/global.css   # 색·글꼴 토큰, Tailwind
     └── content.config.ts   # 글·시리즈 frontmatter 스키마(Astro가 이 위치에서 찾는다)
 ```
@@ -40,6 +41,7 @@ hk-tech-client/
 | 조각 하나만 쓰는 CSS·훅          | 그 조각 옆: `interviewCarousel.css`, `useTopicFilter.ts`                                   |
 | 글·시리즈 읽기, `Post`·`Series` 타입 | `lib/posts.ts`, `lib/series.ts`. 컬렉션(`astro:content`)은 여기서만 읽는다             |
 | 상수·고정 목록                   | `data/`                                                                                    |
+| 사이트 안 링크, `public/` 파일 주소 | `lib/paths.ts`의 `withBase`·`postPath`·`seriesPath`. 블로그가 하위 경로(`/blog`)에서 돌아 `href="/tech/"`처럼 직접 쓰면 깨진다(README [사이트 주소와 /blog](./README.md#사이트-주소와-blog)) |
 
 - 브라우저에서 돌 필요가 없는 조각은 `.astro`로 쓴다. 아이콘은 `.astro`에서 `@lucide/astro`, `.tsx`에서 `lucide-react`.
 - React 섬은 `astro:content` 같은 Astro 모듈을 import하지 않는다. 데이터는 페이지가 props로 넘기고, 타입은 `import type`으로만 가져온다.

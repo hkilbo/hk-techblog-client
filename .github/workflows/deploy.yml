@@ -22,7 +22,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      # 지금 Pages 주소를 알아내 빌드에 넘긴다. 커스텀 도메인이 없으면 hkilbo.github.io + /hk-techblog-client,
+      # 있으면 그 도메인 + 빈 경로. 블로그는 그 아래 /blog에 놓인다(astro.config.mjs, README '사이트 주소와 /blog')
+      - id: pages
+        uses: actions/configure-pages@v5
       - uses: withastro/action@v6
+        env:
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
 
   deploy:
     needs: build

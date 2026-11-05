@@ -1,6 +1,7 @@
 ---
 import { CATEGORY_LABEL } from '@/data/categories';
 import type { Post } from '@/lib/posts';
+import { postPath } from '@/lib/paths';
 
 interface Props {
   post: Post;
@@ -10,7 +11,7 @@ const { post } = Astro.props;
 ---
 
 <!-- 글 페이지 아래 관련 글 카드. HDS Card처럼 테두리 없이 썸네일이 위, 글이 아래다 -->
-<a href={`/blog/${post.id}/`} class="group block">
+<a href={postPath(post.id)} class="group block">
   <div class="relative aspect-video overflow-hidden rounded-12">
     <img
       src={post.thumbnail}

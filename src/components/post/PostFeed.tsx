@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { TECH_TOPICS, TOPIC_LABEL } from '@/data/categories';
+import { withBase } from '@/lib/paths';
 import type { Post, TechTopic } from '@/lib/posts';
 import { Pagination } from './Pagination';
 import { PostList } from './PostList';
@@ -48,7 +49,7 @@ export function PostFeed({
       <div ref={topRef} className="flex scroll-mt-132 items-start gap-8">
         {withHomeLink && (
           <a
-            href="/"
+            href={withBase('/')}
             aria-label="홈으로"
             className="flex size-40 shrink-0 items-center justify-center rounded-full border border-line text-foreground transition-colors hover:border-foreground"
           >

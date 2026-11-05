@@ -1,7 +1,9 @@
 ---
+import { withBase } from '@/lib/paths';
+
 interface Props {
   /** 카테고리 페이지 전용 심볼(public/brand/hk-techblog-<variant>.svg). 없으면 기본 TECH 심볼 */
-  variant?: 'blog' | 'product' | 'culture';
+  variant?: 'tech' | 'product' | 'culture';
 }
 
 const { variant } = Astro.props;
@@ -11,7 +13,7 @@ const { variant } = Astro.props;
 <!-- shrink-0: 제목 옆(flex)에 둘 때 긴 제목에 밀려 작아지지 않게 한다 -->
 <div class="relative w-fit shrink-0">
   <img
-    src={variant ? `/brand/hk-techblog-${variant}.svg` : '/brand/hk-techblog-symbol.svg'}
+    src={withBase(variant ? `/brand/hk-techblog-${variant}.svg` : '/brand/hk-techblog-symbol.svg')}
     alt=""
     width="512"
     height="512"

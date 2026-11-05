@@ -5,6 +5,7 @@ import IconicMark from '@/components/brand/IconicMark.astro';
 import { PostItem } from '@/components/post/PostItem';
 import { getSeriesPosts } from '@/lib/posts';
 import { getAllSeries } from '@/lib/series';
+import { withBase } from '@/lib/paths';
 
 export async function getStaticPaths() {
   return (await getAllSeries()).map((series) => ({ params: { id: series.id }, props: { series } }));
@@ -22,7 +23,7 @@ const posts = await getSeriesPosts(series.id);
       <IconicMark />
       <div class="min-w-0">
         <a
-          href="/series/"
+          href={withBase('/series/')}
           class="block w-fit text-14 font-semibold text-accent transition-colors hover:text-foreground"
         >
           시리즈

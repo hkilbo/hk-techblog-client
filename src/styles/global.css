@@ -1,9 +1,9 @@
 @import 'tailwindcss';
 
-/* Pretendard는 public/fonts에서 바로 읽는다. BaseLayout이 preload한다 */
+/* Pretendard는 src/assets에 둔다. Vite가 base를 붙인 주소로 옮겨 주고, BaseLayout이 같은 주소를 preload한다 */
 @font-face {
   font-family: 'Pretendard Variable';
-  src: url('/fonts/PretendardVariable.woff2') format('woff2-variations');
+  src: url('../assets/PretendardVariable.woff2') format('woff2-variations');
   font-weight: 45 920;
   font-style: normal;
   font-display: swap;

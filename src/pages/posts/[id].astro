@@ -8,6 +8,7 @@ import PostCard from '@/components/post/PostCard.astro';
 import SeriesNav from '@/components/post/SeriesNav.astro';
 import { CATEGORY_LABEL, TOPIC_LABEL } from '@/data/categories';
 import { getPosts, getRelatedPosts, renderPost, tagSlug } from '@/lib/posts';
+import { withBase } from '@/lib/paths';
 
 export async function getStaticPaths() {
   return (await getPosts()).map((post) => ({ params: { id: post.id }, props: { post } }));
@@ -46,7 +47,7 @@ const toc = headings.filter((heading) => heading.depth === 2);
               {post.tags.map((tag) => (
                 <li>
                   <a
-                    href={`/tags/${tagSlug(tag)}/`}
+                    href={withBase(`/tags/${tagSlug(tag)}/`)}
                     class="block rounded-4 border border-line bg-surface px-8 py-4 text-12 transition-colors hover:border-foreground"
                   >
                     #{tag}

@@ -2,6 +2,7 @@
 import HighlightTitle from '@/components/brand/HighlightTitle.astro';
 import { getSeriesPosts } from '@/lib/posts';
 import { getAllSeries } from '@/lib/series';
+import { withBase } from '@/lib/paths';
 import SeriesCard from '@/components/series/SeriesCard.astro';
 
 // 홈의 시리즈 줄. 시리즈가 없으면 섹션째 빠진다
@@ -11,7 +12,7 @@ const counts = await Promise.all(allSeries.map((series) => getSeriesPosts(series
 
 {allSeries.length > 0 && (
   <section class="page-container py-64 md:py-80">
-    <HighlightTitle lead="한 주제를 끝까지 파고든," keyword="시리즈" href="/series/" />
+    <HighlightTitle lead="한 주제를 끝까지 파고든," keyword="시리즈" href={withBase('/series/')} />
     <ul class="mt-24 grid gap-32 md:grid-cols-2 lg:grid-cols-3">
       {allSeries.map((series, i) => (
         <li>

@@ -17,7 +17,7 @@
 2. `content/posts/` 아래에 글 폴더를 만든다. 폴더 이름이 글 주소 `/posts/<폴더 이름>/`가 되므로 영문 소문자와 하이픈으로 짓는다.
 3. 글 폴더에 `index.md`와 표지 이미지 `cover.jpg`를 넣는다.
 4. `index.md` 맨 위에 [frontmatter](#frontmatter-쓰기)를 쓰고, 그 아래에 [본문](#본문-쓰기)을 쓴다.
-5. `pnpm dev`로 띄워 `http://localhost:4321/blog/<폴더 이름>/`에서 확인한다.
+5. `pnpm dev`로 띄워 `http://localhost:4321/blog/posts/<폴더 이름>/`에서 확인한다.
 6. PR을 올린다. CI가 통과하고 리뷰를 받으면 main에 머지한다.
 
 ```
@@ -95,13 +95,14 @@ pnpm install
 pnpm dev
 ```
 
-`pnpm dev`는 http://localhost:4321 에 개발 서버를 띄운다(포트가 사용 중이면 다음 번호를 쓴다). 파일을 고치면 바로 반영된다.
+`pnpm dev`는 http://localhost:4321/blog/ 에 개발 서버를 띄운다(포트가 사용 중이면 다음 번호를 쓴다). 파일을 고치면 바로 반영된다. 주소에 `/blog`가 붙는 이유는 아래 [사이트 주소와 /blog](#사이트-주소와-blog)에 있다.
 
 | 명령             | 하는 일                                                                       |
 | ---------------- | ----------------------------------------------------------------------------- |
 | `pnpm dev`       | 개발 서버. 고친 내용이 바로 반영된다                                          |
 | `pnpm build`     | `dist/`에 배포할 정적 파일을 만든다                                           |
 | `pnpm preview`   | `dist/`를 그대로 띄운다. 코드를 고쳐도 다시 빌드하기 전에는 바뀌지 않는다     |
+| `pnpm dev:gh`, `pnpm build:gh`, `pnpm preview:gh` | 위 세 명령을 지금 배포 주소(`hkilbo.github.io/hk-techblog-client`) 기준으로 돌린다. 아래 [사이트 주소와 /blog](#사이트-주소와-blog) |
 | `pnpm lint`      | ESLint로 코드 규칙과 import 경로를 검사한다                                   |
 | `pnpm format`    | Prettier로 포맷을 고친다. `pnpm format:check`는 검사만 한다                   |
 | `pnpm check`     | `astro check`로 타입 오류를 검사한다                                          |
@@ -130,7 +131,7 @@ flowchart TD
     D --> E["Deploy · deploy.yml<br/>빌드 → GitHub Pages 배포"]
     S["매일 03:00 KST"] --> E
     M["Actions 탭에서 수동 실행"] --> E
-    E --> F["tech.hankookilbo.com"]
+    E --> F["GitHub Pages"]
 ```
 
 ### CI: PR마다 검사한다
@@ -163,7 +164,8 @@ flowchart TD
     C1[("content/<br/>글 · 시리즈")]
     C2[("assets.hankookilbo.com<br/>헤더 · 푸터 HTML 조각")]
     subgraph J1["build job"]
-        B1["actions/checkout<br/>저장소 받기"] --> B2["withastro/action<br/>의존성 설치"]
+        B1["actions/checkout<br/>저장소 받기"] --> B0["actions/configure-pages<br/>지금 Pages 주소 알아내기"]
+        B0 --> B2["withastro/action<br/>의존성 설치"]
         B2 --> B3["astro build"]
         B3 --> B4["dist/ 업로드<br/>(Pages 아티팩트)"]
     end
@@ -173,22 +175,43 @@ flowchart TD
     C1 --> B3
     C2 --> B3
     B4 --> D1
-    D1 --> SITE["tech.hankookilbo.com"]
+    D1 --> SITE["hkilbo.github.io/hk-techblog-client/blog<br/>(도메인 연결 뒤 tech.hankookilbo.com/blog)"]
 ```
 
-1. **build job**: `actions/checkout`이 저장소를 받는다. `withastro/action`이 lockfile을 보고 pnpm으로 의존성을 설치하고, `astro build`로 사이트를 빌드한 뒤 결과물 `dist/`를 Pages 아티팩트로 업로드한다.
+1. **build job**: `actions/checkout`이 저장소를 받는다. `actions/configure-pages`가 지금 Pages 주소(도메인과 하위 경로)를 알아내 `SITE_URL`·`PAGES_BASE_PATH`로 빌드에 넘긴다. `withastro/action`이 lockfile을 보고 pnpm으로 의존성을 설치하고, `astro build`로 사이트를 빌드한 뒤 결과물 `dist/`를 Pages 아티팩트로 업로드한다.
 2. **deploy job**: build job이 성공해야 시작한다(`needs: build`). `actions/deploy-pages`가 아티팩트를 `github-pages` 환경에 배포한다. 이때 두 권한을 쓴다. `pages: write`는 Pages에 배포하는 권한이고, `id-token: write`는 이 저장소의 워크플로가 보낸 배포임을 OIDC 토큰으로 증명하는 권한이다.
 
 build job이 실패하면 deploy job은 돌지 않고, 사이트는 직전에 배포한 버전 그대로 남는다.
 
 > 공개 저장소에서는 60일 동안 저장소 활동이 없으면 GitHub가 예약 실행(`schedule`)을 멈춘다. 멈추면 Actions 탭에서 Deploy 워크플로를 다시 켠다.
 
+### 사이트 주소와 /blog
+
+블로그는 도메인 루트가 아니라 `/blog` 아래에 있다. 루트(`/`)는 지금 `/blog/`로 넘기기만 하고 비워 둔다. 나중에 루트에 다른 것(기술 조직 홈 등)을 두더라도 블로그 주소가 바뀌지 않게 하기 위해서다.
+
+| 어디서                | 블로그 주소                                       |
+| --------------------- | ------------------------------------------------- |
+| 로컬 개발 서버        | `http://localhost:4321/blog/`                     |
+| 도메인 연결 전(지금)  | `https://hkilbo.github.io/hk-techblog-client/blog/` |
+| 도메인 연결 뒤        | `https://tech.hankookilbo.com/blog/`              |
+
+- `astro.config.mjs`가 `base`를 `/blog`로 두고 빌드 결과를 `dist/blog/`에 쓴다. 빌드가 끝나면 `dist/index.html`(`/blog/`로 넘기는 페이지)과 `dist/404.html`(GitHub Pages는 사이트 루트의 404.html만 읽는다)을 함께 만든다.
+- GitHub Pages가 앞에 붙이는 경로는 Deploy 워크플로의 `actions/configure-pages`가 알아내 `PAGES_BASE_PATH`로 넘긴다. 커스텀 도메인이 없으면 `/hk-techblog-client`, 있으면 빈 값이다. 그래서 도메인을 연결하는 것 말고는 따로 바꿀 설정이 없다.
+- 사이트 안 링크와 `public/` 파일 주소는 `src/lib/paths.ts`의 `withBase`(글은 `postPath`, 시리즈는 `seriesPath`)를 거친다. `href="/tech/"`처럼 직접 쓰면 `/blog`가 빠져 깨진다.
+
+로컬에서는 두 주소를 골라 띄운다. 기본 명령은 최종 주소, `:gh` 명령은 지금 주소 기준이다. 주소별 값은 `env/.env.gh`에 있고 `env-cmd`가 넣어 준다.
+
+| 명령                                           | 기준 주소                                    | 로컬에서 여는 곳                                 |
+| ---------------------------------------------- | -------------------------------------------- | ------------------------------------------------ |
+| `pnpm dev`, `pnpm build`, `pnpm preview`       | `https://tech.hankookilbo.com/blog/`         | `http://localhost:4321/blog/`                    |
+| `pnpm dev:gh`, `pnpm build:gh`, `pnpm preview:gh` | `https://hkilbo.github.io/hk-techblog-client/blog/` | `http://localhost:4321/hk-techblog-client/blog/` |
+
 ## 처음 한 번 설정하기
 
 저장소 관리자가 한 번만 하면 된다.
 
 1. **Pages 켜기**: Settings → Pages → Build and deployment의 Source를 `GitHub Actions`로 바꾼다. 비공개 저장소에서 Pages를 쓰려면 조직이 GitHub Team 이상 플랜이어야 한다.
-2. **도메인 연결**: 사내 DNS에 `tech.hankookilbo.com` → `hkilbo.github.io` CNAME 레코드를 추가한다. 그다음 Settings → Pages → Custom domain에 `tech.hankookilbo.com`을 넣고 Enforce HTTPS를 켠다.
+2. **도메인 연결**: 사내 DNS에 `tech.hankookilbo.com` → `hkilbo.github.io` CNAME 레코드를 추가한다. 그다음 Settings → Pages → Custom domain에 `tech.hankookilbo.com`을 넣고 Enforce HTTPS를 켠다. GitHub Actions로 배포하므로 `public/`에 CNAME 파일은 두지 않는다. 연결 전까지는 `https://hkilbo.github.io/hk-techblog-client/blog/`에서 열리고, 연결하면 `https://tech.hankookilbo.com/blog/`가 된다([사이트 주소와 /blog](#사이트-주소와-blog)).
 3. **main 보호**(권장): 브랜치 보호 규칙으로 main에 직접 push하지 못하게 막고, CI의 `check` job 통과를 머지 조건으로 건다.
 4. **댓글 켜기**(선택): 댓글은 GitHub Discussions 기반의 giscus로 받는다.
    1. 저장소를 공개로 바꾸고 Discussions를 켠 뒤 `Comments` 카테고리를 만든다.

@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import notFound from '@/assets/notFound.png';
+import { withBase } from '@/lib/paths';
 ---
 
 <BaseLayout title="페이지를 찾을 수 없습니다 | 한국일보 기술 블로그">
@@ -11,7 +12,7 @@ import notFound from '@/assets/notFound.png';
       <h1 class="mt-32 text-28 font-bold">페이지를 찾을 수 없습니다</h1>
       <p class="mt-12 text-17 text-muted">주소가 바뀌었거나 사라진 페이지입니다.</p>
       <a
-        href="/"
+        href={withBase('/')}
         class="mt-32 flex h-48 items-center rounded-full bg-brand-lime px-24 text-15 font-semibold text-background transition hover:bg-brand-lime/90 active:scale-98"
       >
         홈으로 가기
