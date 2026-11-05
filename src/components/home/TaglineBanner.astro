@@ -1,16 +1,7 @@
----
-interface Props {
-  class?: string;
-}
-
-const { class: className } = Astro.props;
----
-
 <!-- huick의 '뉴스가 너무 어려운 사람들을 위한 뉴스' 띠를 옮겼다. 모눈종이 바탕 + 손그림 동그라미 -->
 <p
   class:list={[
     'grid-paper flex min-h-72 items-center justify-center bg-surface px-16 py-12 text-center text-15 font-medium text-foreground md:min-h-80 md:text-20',
-    className,
   ]}
 >
   <span>

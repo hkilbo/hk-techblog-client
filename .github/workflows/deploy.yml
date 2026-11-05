@@ -5,7 +5,12 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    - cron: '0 18 * * *' # 매일 03:00 KST. 헤더·푸터 조각을 새로 받는다(MIGRATION.md §2.4)
+    - cron: '0 18 * * *' # 매일 03:00 KST. 헤더·푸터 조각을 새로 받는다(README.md 'Deploy')
+
+# push와 예약 실행이 겹치면 차례로 배포한다(GitHub Pages 공식 예시와 같다)
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 permissions:
   contents: read

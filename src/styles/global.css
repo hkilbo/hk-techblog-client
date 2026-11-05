@@ -63,7 +63,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-body: var(--body);
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-accent: var(--accent);
