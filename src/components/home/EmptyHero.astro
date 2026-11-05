@@ -1,0 +1,21 @@
+---
+import { withBase } from '@/lib/paths';
+
+// 홈 첫 화면에 보여 줄 글이 아직 없을 때. 대표 글 자리에 안내를, 오른쪽에 대표 그림(한국일보 TECH)을 둔다
+---
+
+<section class="page-container grid gap-32 py-48 md:grid-cols-2 md:items-center md:gap-56 md:py-80">
+  <div>
+    <h2 class="text-28 font-extrabold tracking-tight text-foreground md:text-36">첫 글을 준비하고 있어요</h2>
+    <p class="mt-16 text-15 text-muted">
+      한국일보 개발자와 프로덕트 팀이 일하면서 배운 것, 고민한 것, 만든 것을 곧 이곳에 씁니다.
+    </p>
+  </div>
+  <img
+    src={withBase('/brand/hk-techblog-hero.svg')}
+    alt=""
+    width="800"
+    height="800"
+    class="order-first w-220 justify-self-center md:order-last md:w-360"
+  />
+</section>

@@ -18,12 +18,18 @@ const counts = await Promise.all(allSeries.map((series) => getSeriesPosts(series
       <IconicMark />
       <HighlightTitle as="h1" lead="한 주제를 끝까지 파고든," keyword="시리즈" />
     </div>
-    <ul class="mt-40 grid gap-32 md:grid-cols-2 lg:grid-cols-3">
-      {allSeries.map((series, i) => (
-        <li>
-          <SeriesCard series={series} count={counts[i]} headingAs="h2" />
-        </li>
-      ))}
-    </ul>
+    {allSeries.length > 0 ? (
+      <ul class="mt-40 grid gap-32 md:grid-cols-2 lg:grid-cols-3">
+        {allSeries.map((series, i) => (
+          <li>
+            <SeriesCard series={series} count={counts[i]} headingAs="h2" />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="mt-40 rounded-16 border border-line py-80 text-center text-15 text-muted">
+        아직 시리즈가 없어요. 여러 편으로 이어 쓰는 글이 생기면 여기에 모아요.
+      </p>
+    )}
   </main>
 </BaseLayout>
