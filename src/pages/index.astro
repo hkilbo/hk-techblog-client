@@ -1,21 +1,28 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import Hero from '@/components/home/Hero.astro';
+import CategoryBand from '@/components/home/CategoryBand.astro';
+import FeaturedHero from '@/components/home/FeaturedHero.astro';
 import SeriesSection from '@/components/home/SeriesSection.astro';
+import TaglineBanner from '@/components/home/TaglineBanner.astro';
 import { PostFeed } from '@/components/post/PostFeed';
 import { getPosts } from '@/lib/posts';
 
-// 섹션마다 배경이 통째로 바뀐다(커리업 방식): 히어로 검정 → 띠 코랄 → 시리즈·글 목록 흰색
+// huick처럼: 대표 글 히어로 → 모눈 띠 배너 → 코랄 카테고리 띠 → 시리즈 → 전체 글
 const posts = await getPosts();
 ---
 
 <BaseLayout>
-  <main class="flex-1">
-    <Hero />
+  <main id="main" tabindex="-1" class="flex-1">
+    <h1 class="sr-only">한국일보 기술 블로그</h1>
+    {posts[0] && <FeaturedHero post={posts[0]} />}
+    <div class="page-container pb-48 md:pb-64">
+      <TaglineBanner />
+    </div>
+    <CategoryBand />
     <SeriesSection />
     <!-- scroll-mt: 고정된 헤더(76) + GNB(56) 바로 아래에 맞춘다. 글 목록은 화면에 보일 때 붙는다 -->
     <section id="posts" class="page-container scroll-mt-132 py-64 md:py-80">
-      <PostFeed client:visible posts={posts} title="All posts" />
+      <PostFeed client:visible posts={posts} lead="개발팀이 요즘 붙잡고 있는 것," title="전체 글" />
     </section>
   </main>
 </BaseLayout>

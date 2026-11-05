@@ -5,7 +5,7 @@ import notFound from '@/assets/notFound.png';
 ---
 
 <BaseLayout title="페이지를 찾을 수 없습니다 | 한국일보 기술 블로그">
-  <main class="flex-1 bg-background text-foreground">
+  <main id="main" tabindex="-1" class="flex-1 bg-background text-foreground">
     <div class="page-container flex flex-col items-center py-64 text-center md:py-96">
       <Image src={notFound} alt="" widths={[480, 960]} sizes="480px" loading="eager" class="h-auto w-full max-w-480" />
       <h1 class="mt-32 text-28 font-bold">페이지를 찾을 수 없습니다</h1>

@@ -7,7 +7,8 @@ tags: ["인터뷰","프로덕트","뉴스룸"]
 author: { name: "지우", role: "Product Manager" }
 publishedAt: 2026-08-27
 readingMinutes: 10
-cover: ./cover.jpg
+# 목업 사진(Unsplash 라이선스). 실제 인터뷰 사진이 생기면 ./cover.jpg로 바꾼다
+cover: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=900&h=1200&fit=crop&crop=faces&q=80"
 ---
 
 지우는 일주일에 하루를 뉴스룸에서 보냅니다. 요구사항 문서보다 기자의 마우스 움직임에서 더 많이 배운다고 말합니다.

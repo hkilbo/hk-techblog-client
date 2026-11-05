@@ -1,5 +1,6 @@
 ---
 import { InterviewCarousel } from './InterviewCarousel';
+import IconicMark from '@/components/brand/IconicMark.astro';
 import type { Post } from '@/lib/posts';
 
 interface Props {
@@ -10,16 +11,22 @@ interface Props {
 const { interviews } = Astro.props;
 ---
 
-<section class="bg-surface text-foreground">
+<section class="grid-paper bg-surface text-foreground">
   <div class="page-container py-64 md:py-80">
-    <h1 class="text-36 font-extrabold tracking-tight md:text-48">
-      뉴스를 만드는 개발팀은
-      <br />
-      이렇게 일합니다.
-    </h1>
-    <p class="mt-20 max-w-520 text-17 text-body">
-      개발자들이 자기 일을 직접 이야기합니다. 어떻게 일하는지, 무엇을 중요하게 보는지.
-    </p>
-    {interviews.length > 0 && <InterviewCarousel client:load posts={interviews} />}
+    <!-- 큰 제목은 페이지 심볼 옆에 둔다 -->
+    <div class="flex items-center gap-16 md:gap-24">
+      <IconicMark variant="culture" />
+      <h1 class="min-w-0 text-36 font-extrabold tracking-tight break-keep md:text-48">
+        뉴스를 만드는 개발팀은
+        <br />
+        이렇게 일합니다.
+      </h1>
+    </div>
+    {interviews.length > 0 && (
+      <>
+        <h2 class="sr-only">개발자 인터뷰</h2>
+        <InterviewCarousel client:load posts={interviews} />
+      </>
+    )}
   </div>
 </section>

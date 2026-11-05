@@ -7,7 +7,8 @@ tags: ["인터뷰","온보딩","코드리뷰"]
 author: { name: "하린", role: "Engineering Manager" }
 publishedAt: 2026-07-30
 readingMinutes: 7
-cover: ./cover.jpg
+# 목업 사진(Unsplash 라이선스). 실제 인터뷰 사진이 생기면 ./cover.jpg로 바꾼다
+cover: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=900&h=1200&fit=crop&crop=faces&q=80"
 ---
 
 하린은 신입 개발자 온보딩을 세 기수째 운영하고 있습니다. 첫 주에 배포까지 하게 하는 커리큘럼으로 알려져 있습니다.

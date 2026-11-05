@@ -38,21 +38,14 @@
   --radius-8: 0.8rem;
   --radius-12: 1.2rem;
   --radius-16: 1.6rem;
+  /* 조약돌 거울 모양(위가 좁고 왼쪽 아래가 가장 낮다). 사람 사진 틀에 쓴다: 인터뷰 카드 */
+  --radius-pebble: 44% 56% 72% 28% / 78% 60% 40% 22%;
 
   --container-*: initial;
 
   /* 브랜드 로고(public/brand)에서 잰 라임, 에러 일러스트에서 잰 코랄. 테마와 상관없이 같다 */
   --color-brand-lime: #88f03e;
   --color-brand-coral: #ff6363;
-
-  /* 타자기 커서(모션 UI M03). 부드럽게 흐려지지 않고 1초에 한 번 끊어서 깜빡인다 */
-  --animate-blink: blink 1s steps(1) infinite;
-
-  @keyframes blink {
-    50% {
-      opacity: 0;
-    }
-  }
 }
 
 /* 색 출처: hk-home-client(한국일보 홈)의 다크 모드. accent는 huick 색이다. 규칙은 DESIGN.md §2. 다크만 쓴다 */
@@ -70,7 +63,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-body: var(--body);
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-accent: var(--accent);
@@ -94,6 +86,14 @@
   }
 }
 
+/* 모눈종이 바탕(huick 띠 배너에서 가져왔다): line 색 반투명 1px 선을 24px 간격으로. 띠 배너와 Culture 히어로가 쓴다 */
+@utility grid-paper {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--line) 50%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--line) 50%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
 @layer base {
   html {
     font-size: 62.5%;
@@ -103,6 +103,20 @@
     font-size: 1.6rem;
     background: var(--background);
     color: var(--body);
+  }
+
+  /* 본문 바로가기(BaseLayout)의 도착점. 고정 헤더 + GNB 아래에 멈추고, 도착한 main에는 포커스 링을 그리지 않는다 */
+  #main {
+    scroll-margin-top: 11.2rem; /* 헤더 64 + GNB 48 */
+    outline: none;
+
+    @media (width >= 768px) {
+      scroll-margin-top: 12rem; /* GNB 56 */
+    }
+
+    @media (width >= 1280px) {
+      scroll-margin-top: 13.2rem; /* 헤더 76 */
+    }
   }
 }
 

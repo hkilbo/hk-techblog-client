@@ -7,7 +7,8 @@ tags: ["인터뷰","프론트엔드","성능"]
 author: { name: "서윤", role: "Frontend Engineer" }
 publishedAt: 2026-10-21
 readingMinutes: 9
-cover: ./cover.jpg
+# 목업 사진(Unsplash 라이선스). 실제 인터뷰 사진이 생기면 ./cover.jpg로 바꾼다
+cover: "https://images.unsplash.com/photo-1548142813-c348350df52b?w=900&h=1200&fit=crop&crop=faces&q=80"
 ---
 
 서윤은 한국일보 홈 화면의 프론트엔드를 맡고 있습니다. 속보가 뜨는 날 가장 바쁜 사람 가운데 하나입니다. 자리에 앉자마자 켜는 화면이 무엇인지부터 물었습니다.

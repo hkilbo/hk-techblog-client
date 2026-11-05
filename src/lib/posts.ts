@@ -31,29 +31,35 @@ export interface Post {
 /** frontmatter를 화면이 쓰는 모양으로 바꾼다. 썸네일은 빌드 때 800px webp로 줄인다 */
 async function toPost(entry: CollectionEntry<'posts'>): Promise<Post> {
   const { cover, publishedAt, series, ...data } = entry.data;
-  const thumbnail = await getImage({ src: cover, width: 800, format: 'webp' });
+  // 주소로 받은 표지는 크기를 모르므로 받아서 잰다(inferSize)
+  const thumbnail = await getImage({ src: cover, width: 800, format: 'webp', inferSize: typeof cover === 'string' });
   return {
     ...data,
     id: entry.id,
-    publishedAt: publishedAt.toISOString().slice(0, 10),
+    // 한국 날짜(YYYY-MM-DD). 시각까지 적은 글도 KST 기준 날짜가 된다
+    publishedAt: publishedAt.toLocaleDateString('sv-SE', { timeZone: 'Asia/Seoul' }),
     series: series && { id: series.id.id, order: series.order },
     thumbnail: thumbnail.src,
   };
 }
 
-/** 최신순. category가 없으면 전체 */
-export async function getPosts(category?: PostCategory): Promise<Post[]> {
-  const entries = await getCollection('posts', (entry) => !category || entry.data.category === category);
-  const posts = await Promise.all(entries.map(toPost));
-  return posts.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+let allPosts: Promise<Post[]> | undefined;
+
+/** 최신순. category가 없으면 전체. 빌드 동안 한 번만 읽어 모든 페이지가 같이 쓴다(개발 서버에서는 글을 고치면 바로 보이게 매번 읽는다) */
+export function getPosts(category?: PostCategory): Promise<Post[]> {
+  if (!allPosts || import.meta.env.DEV) {
+    allPosts = getCollection('posts')
+      .then((entries) => Promise.all(entries.map(toPost)))
+      .then((posts) => posts.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)));
+  }
+  // 같이 쓰는 배열이라 복사해서 준다. 받은 쪽이 정렬·수정해도 다른 페이지에 번지지 않는다
+  return allPosts.then((posts) => (category ? posts.filter((post) => post.category === category) : [...posts]));
 }
 
-/** 없는 id면 undefined. 본문(Content)과 목차용 소제목(headings)을 함께 돌려준다 */
-export async function getPost(id: string) {
+/** 없는 id면 undefined. 글 페이지의 본문(Content)과 목차용 소제목(headings) */
+export async function renderPost(id: string) {
   const entry = await getEntry('posts', id);
-  if (!entry) return undefined;
-  const [post, { Content, headings }] = await Promise.all([toPost(entry), render(entry)]);
-  return { post, Content, headings };
+  return entry && render(entry);
 }
 
 /** 같은 카테고리 글을 먼저, 모자라면 다른 글로 채워 최신순 3개 */
@@ -72,7 +78,10 @@ export async function getSeriesPosts(seriesId: string): Promise<Post[]> {
     .sort((a, b) => (a.series?.order ?? 0) - (b.series?.order ?? 0));
 }
 
-/** 태그 주소(/tags/<slug>/). 띄어쓰기만 하이픈으로 바꾸고 한글은 그대로 둔다 */
+/** 태그 주소(/tags/<slug>/). 띄어쓰기와 주소에서 뜻이 바뀌는 / # ? %는 하이픈으로 바꾸고, 한글은 그대로 둔다(CI/CD → ci-cd) */
 export function tagSlug(tag: string) {
-  return tag.trim().toLowerCase().replace(/\s+/g, '-');
+  return tag
+    .trim()
+    .toLowerCase()
+    .replace(/[\s/#?%]+/g, '-');
 }

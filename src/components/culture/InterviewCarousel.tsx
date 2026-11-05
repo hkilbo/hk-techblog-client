@@ -31,9 +31,9 @@ function ArrowButton({ direction, onClick }: CustomArrowProps & { direction: 'pr
   );
 }
 
-// 인터뷰 카드를 한 화면에 lg 3장, md 2장, 모바일 1장 보여 주고 한 장씩 넘긴다. 카드는 page-container 밖으로 나가지 않는다
+// 인터뷰 카드를 한 화면에 lg 4장, md 2장, 모바일 1장 보여 주고 한 장씩 넘긴다. 카드는 page-container 밖으로 나가지 않는다
 export function InterviewCarousel({ posts }: { posts: Post[] }) {
-  // 하이드레이션 뒤에 정해진다. 그 전에는 interviewCarousel.css가 SSR 배치(3장)를 화면 폭에 맞춘다
+  // 하이드레이션 뒤에 정해진다. 그 전에는 interviewCarousel.css가 SSR 배치(4장)를 화면 폭에 맞춘다
   const [speed, setSpeed] = useState<number>();
   useEffect(() => setSpeed(matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : SLIDE_SPEED_MS), []);
 
@@ -49,7 +49,7 @@ export function InterviewCarousel({ posts }: { posts: Post[] }) {
     onReInit: syncInert,
     infinite: false,
     speed: speed ?? SLIDE_SPEED_MS,
-    slidesToShow: 3,
+    slidesToShow: 4,
     slidesToScroll: 1,
     arrows: true,
     prevArrow: <ArrowButton direction="prev" />,
