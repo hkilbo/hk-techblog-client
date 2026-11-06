@@ -6,7 +6,7 @@ topic: frontend
 tags: ["Web Components", "Shadow DOM", "Declarative Shadow DOM", "SSR", "CDN"]
 author: { name: "가을", role: "Frontend Engineer" }
 publishedAt: 2026-11-05
-readingMinutes: 8
+readingMinutes: 12
 cover: ./cover.svg
 ---
 
