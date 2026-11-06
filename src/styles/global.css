@@ -129,6 +129,10 @@
       @apply mt-48 mb-16 scroll-mt-140 border-b border-line pb-12 text-28 font-bold text-foreground;
     }
 
+    & > h3 {
+      @apply mt-32 mb-12 scroll-mt-140 text-22 font-semibold text-foreground;
+    }
+
     & > p {
       @apply mt-20;
     }
@@ -138,6 +142,38 @@
 
       & > li + li {
         @apply mt-8;
+      }
+    }
+
+    & > ol {
+      @apply mt-20 list-decimal pl-24;
+
+      & > li + li {
+        @apply mt-8;
+      }
+    }
+
+    & li > ul {
+      @apply mt-8 list-disc pl-24;
+    }
+
+    /* 인라인 코드. 코드 블록 안의 code는 아래 pre 규칙을 따른다 */
+    & :not(pre) > code {
+      @apply rounded-4 bg-surface px-6 py-2 text-15;
+      font-family: inherit;
+    }
+
+    /* 표. 좁은 화면에서는 페이지가 아니라 표만 가로로 밀린다 */
+    & > table {
+      @apply mt-20 block w-max max-w-full overflow-x-auto text-15;
+
+      & th,
+      & td {
+        @apply border-b border-line px-12 py-8 text-left align-top break-keep;
+      }
+
+      & th {
+        @apply bg-surface font-bold text-foreground;
       }
     }
 
