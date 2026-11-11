@@ -57,7 +57,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <link rel="alternate" type="application/rss+xml" title="한국일보 기술 블로그" href={withBase('/rss.xml')} />
     <link rel="preload" href={pretendardUrl} as="font" type="font/woff2" crossorigin />
   </head>
-  <body class="flex min-h-full flex-col pt-64 xl:pt-76">
+  <!-- 위 여백 = 고정된 헤더(64 / xl 76) + 고정된 GNB(48 / md 56) -->
+  <body class="flex min-h-full flex-col pt-112 md:pt-120 xl:pt-132">
     <!-- 키보드 첫 Tab. 헤더·GNB를 건너뛰어 페이지의 <main id="main">으로 간다 -->
     <a
       href="#main"

@@ -17,8 +17,10 @@ const here = Astro.url.pathname;
 const isCurrent = (href: string) => (href === withBase('/') ? here === href : here.startsWith(href));
 ---
 
-<!-- 바탕은 바로 위 interactive-header(다크, data-gnb="solid")와 같은 검정 80%(#000C)다. 헤더처럼 흐림 효과는 없다 -->
-<nav aria-label="블로그 메뉴" class="sticky top-64 z-600 bg-black/80 xl:top-76">
+<!-- 바탕은 바로 위 interactive-header(다크, data-gnb="solid")와 같은 검정 80%(#000C)다. 헤더처럼 흐림 효과는 없다.
+     헤더처럼 fixed로 붙인다. sticky면 맨 위에서 화면을 아래로 당길 때(macOS·iOS 고무줄 스크롤) 본문과 같이 내려와 헤더와 벌어진다.
+     흐름에서 빠진 높이(48 / md 56)는 BaseLayout의 body 위 여백이 맡는다 -->
+<nav aria-label="블로그 메뉴" class="fixed inset-x-0 top-64 z-600 bg-black/80 xl:top-76">
   <!-- 좁은 화면에서 메뉴가 넘치면 메뉴만 옆으로 밀린다 -->
   <ul class="page-container flex h-48 items-center gap-16 overflow-x-auto [scrollbar-width:none] md:h-56 md:gap-32">
     {MENUS.map(({ label, href }) => (
