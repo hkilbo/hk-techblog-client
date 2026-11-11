@@ -7,7 +7,7 @@ export async function GET(context: APIContext) {
   const posts = await getPosts();
   return rss({
     title: '한국일보 기술 블로그',
-    description: '한국일보 개발자와 프로덕트 팀이 일하면서 배운 것, 고민한 것, 만든 것을 씁니다.',
+    description: '다양한 관점과 아이디어를 디지털 서비스로 구현하는 한국일보 개발팀의 기술과 개발 이야기를 공유합니다.',
     // 채널 주소 = astro.config의 site + base. 글 link도 base를 붙여 하위 경로 배포에서도 맞는다
     site: new URL(withBase('/'), context.site ?? 'https://tech.hankookilbo.com').href,
     items: posts.map((post) => ({

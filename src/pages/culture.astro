@@ -1,58 +1,77 @@
 ---
+import { ArrowUpRight } from '@lucide/astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import HighlightTitle from '@/components/brand/HighlightTitle.astro';
-import InterviewHero from '@/components/culture/InterviewHero.astro';
+import PageTitle from '@/components/brand/PageTitle.astro';
+import PanelTitle from '@/components/brand/PanelTitle.astro';
+import { InterviewCarousel } from '@/components/culture/InterviewCarousel';
+import WaysOfWorking from '@/components/culture/WaysOfWorking.astro';
 import { PostList } from '@/components/post/PostList';
-import { TALENTS, WAYS_OF_WORKING } from '@/data/culture';
+import { TALENTS } from '@/data/culture';
+import { APPLY_URL } from '@/data/links';
 import { getPosts } from '@/lib/posts';
 
-// 개발자 인터뷰를 첫 화면에, 일하는 방식과 찾는 동료를 그 아래에, 나머지 컬처 글은 맨 아래에 둔다. Tech와 레이아웃이 다르다
+// 제목(패널 밖) → 인터뷰(모눈종이 바탕) → 일하는 방식과 찾는 동료 → 나머지 컬처 글 순으로 둔다
 const posts = await getPosts('culture');
 const interviews = posts.filter((post) => post.kind === 'interview');
 const stories = posts.filter((post) => post.kind !== 'interview');
 ---
 
 <BaseLayout title="Culture | 한국일보 기술 블로그">
-  <main id="main" tabindex="-1" class="flex-1">
-    <InterviewHero interviews={interviews} />
+  <main id="main" tabindex="-1" class="page-panels flex-1 pb-40 md:pb-64">
+    <!-- 제목은 Tech처럼 패널 밖 페이지 바탕에 둔다. 넓은 화면에서는 패널 왼쪽 끝에, 좁은 화면에서는 패널 안 글자와 줄을 맞춘다 -->
+    <div class="px-16 pt-16 pb-16 md:px-0 md:pt-24 md:pb-32">
+      <PageTitle
+        lines={[{ lead: '한국일보 개발팀의' }, { keyword: '문화', end: '를 소개합니다.' }]}
+        description="인터뷰와 일하는 방식, 복지, 함께하고 싶은 동료를 소개합니다."
+      />
+    </div>
 
-    <section class="page-container py-64 md:py-80">
-      <HighlightTitle lead="이렇게 일해요," keyword="일하는 방식과 복지" />
-      <!-- Product 서비스 카드와 같은 회색 카드 그리드 -->
-      <ul class="mt-24 grid gap-16 md:grid-cols-2 lg:grid-cols-3">
-        {WAYS_OF_WORKING.map(({ icon: Icon, title, description, options }) => (
-          <li class="rounded-12 bg-surface p-24">
-            <Icon class="size-20 text-foreground" stroke-width={1.75} aria-hidden="true" />
-            <h3 class="mt-16 text-18 font-semibold text-foreground">{title}</h3>
-            <p class="mt-8 text-14 text-muted">{description}</p>
-            {options && (
-              <ul class="mt-16 flex flex-wrap gap-8">
-                {options.map((option) => (
-                  <li class="rounded-full border border-line px-12 py-4 text-12 font-semibold text-foreground">
-                    {option}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
+    <!-- 인터뷰만 모눈종이 바탕 패널에 담는다 -->
+    <section class="panel grid-paper">
+      <PanelTitle title="인터뷰" />
+      {interviews.length > 0 ? (
+        <InterviewCarousel client:load posts={interviews} />
+      ) : (
+        // 다른 빈 목록(PostList)과 같은 모양이다
+        <p class="py-80 text-center text-15 text-muted">아직 올라온 인터뷰가 없어요. 첫 인터뷰를 준비하고 있어요.</p>
+      )}
+    </section>
 
-      <HighlightTitle lead="함께라면 좋겠어요," keyword="이런 동료" class="mt-80" />
-      <ol class="mt-24 grid max-w-896 gap-32 md:grid-cols-2">
-        {TALENTS.map(({ title, description }, i) => (
-          <li class="flex gap-16">
-            <span class="text-28 font-extrabold text-accent tabular-nums">{String(i + 1).padStart(2, '0')}</span>
-            <div>
-              <h3 class="text-18 font-semibold text-foreground">{title}</h3>
-              <p class="mt-8 text-15">{description}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
+    <section class="panel">
+      <PanelTitle title="일하는 방식과 복지" />
+      <WaysOfWorking />
+    </section>
 
-      <HighlightTitle lead="개발팀의 하루," keyword="컬처 이야기" class="mt-80 mb-24" />
-      <PostList posts={stories} />
+    <section class="panel">
+      <PanelTitle title="이런 동료">
+        <a
+          href={APPLY_URL}
+          class="flex h-40 items-center gap-6 rounded-4 bg-chip px-16 text-14 font-bold text-foreground transition active:scale-98"
+        >
+          채용 공고 보기
+          <ArrowUpRight class="size-16" stroke-width={2} aria-hidden="true" />
+        </a>
+      </PanelTitle>
+      <!-- 칸 사이에 구분선을 긋는다(grid-lines) -->
+      <div class="grid-lines mt-8 md:[--gutter:2.4rem]">
+        <ol class="grid grid-cols-1 md:grid-cols-2">
+          {TALENTS.map((talent, i) => (
+            <li class="flex items-center gap-16 py-20 md:py-24">
+              <span class="text-28 leading-tight font-extrabold text-accent tabular-nums">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <h3 class="text-16 font-bold break-keep text-foreground md:text-18">{talent}</h3>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="panel">
+      <PanelTitle title="컬처 이야기" />
+      <div class="mt-24">
+        <PostList posts={stories} />
+      </div>
     </section>
   </main>
 </BaseLayout>

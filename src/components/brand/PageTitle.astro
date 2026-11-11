@@ -1,0 +1,96 @@
+---
+interface Props {
+  /** 제목 줄. 줄마다 끊고, keyword에 형광펜을 긋는다 */
+  lines: { lead?: string; keyword?: string; end?: string }[];
+  /** 홈은 화면에 안 보이는 h1이 따로 있어 'p'로 낸다 */
+  as?: 'h1' | 'p';
+  description: string;
+  /** 두 칸 패널(HeroPanel)의 왼쪽처럼 좁은 칸에 놓일 때. lg에서 글자를 줄여 줄이 더 갈라지지 않게 한다 */
+  narrow?: boolean;
+}
+
+const { lines, as: Title = 'h1', description, narrow = false } = Astro.props;
+// 형광펜은 keyword가 있는 줄만 세어 위에서부터 차례로 긋는다
+let markIndex = 0;
+---
+
+<!-- 페이지 첫 제목과 설명. 제목 줄은 일부러 끊는다 -->
+<Title
+  class:list={[
+    'text-28 leading-[1.35] font-extrabold tracking-tight text-foreground sm:text-36 md:text-48',
+    narrow && 'lg:text-36 xl:text-48',
+  ]}
+>
+  {lines.map(({ lead, keyword, end }) => (
+    <span class="line block w-fit">
+      {lead}
+      {lead && keyword && ' '}
+      {keyword && (
+        <span class="mark" style={`--i: ${markIndex++}`}>
+          {keyword}
+        </span>
+      )}
+      {end}
+    </span>
+  ))}
+</Title>
+<p class="mt-20 text-15 break-keep text-muted md:text-16">{description}</p>
+
+<style>
+  /*
+   * 제목 낱말의 형광펜. 처음 열 때 위에서부터 한 줄씩 한 번만 그어지고(약 2초), 계속 반복하지 않는다.
+   * 줄에 올리면 형광펜이 낱말 전체를 덮는다
+   */
+  .mark {
+    position: relative;
+    z-index: 0;
+    display: inline-block;
+    margin-inline: -0.06em;
+    padding-inline: 0.06em;
+    transition: color 0.3s;
+  }
+
+  .mark::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0.1em 0 0.06em;
+    border-radius: 0.2rem;
+    background: color-mix(in srgb, var(--accent) 38%, transparent);
+    /* 평소에는 아래쪽 40%만 칠한다. 올리면 위로 다 찬다 */
+    transform: scaleY(0.4);
+    transform-origin: bottom;
+    animation: draw 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(0.3s + var(--i) * 0.45s);
+    transition:
+      transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 0.35s;
+  }
+
+  /* 왼쪽에서 오른쪽으로 긋는다. 높이(transform)는 올렸을 때 쓰므로 그리는 데는 clip-path를 쓴다 */
+  @keyframes draw {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0);
+    }
+  }
+
+  .line:hover .mark {
+    color: var(--background);
+  }
+
+  .line:hover .mark::before {
+    transform: none;
+    background-color: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mark,
+    .mark::before {
+      animation: none;
+      transition: none;
+    }
+  }
+</style>

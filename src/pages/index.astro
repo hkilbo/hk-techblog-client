@@ -1,29 +1,23 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import CategoryBand from '@/components/home/CategoryBand.astro';
-import EmptyHero from '@/components/home/EmptyHero.astro';
-import FeaturedHero from '@/components/home/FeaturedHero.astro';
-import SeriesSection from '@/components/home/SeriesSection.astro';
-import TaglineBanner from '@/components/home/TaglineBanner.astro';
-import { PostFeed } from '@/components/post/PostFeed';
+import ApplyPanel from '@/components/home/ApplyPanel.astro';
+import CulturePanel from '@/components/home/CulturePanel.astro';
+import HomeHero from '@/components/home/HomeHero.astro';
+import ProductPanel from '@/components/home/ProductPanel.astro';
 import { getPosts } from '@/lib/posts';
 
-// huick처럼: 대표 글 히어로 → 모눈 띠 배너 → 코랄 카테고리 띠 → 시리즈 → 전체 글
+// 한국일보 홈처럼 회색 바탕에 흰 패널을 쌓는다: 히어로(소개 문장·시리즈 + 최신 글 두 편) → Culture·채용 → Product
 const posts = await getPosts();
 ---
 
 <BaseLayout>
-  <main id="main" tabindex="-1" class="flex-1">
+  <main id="main" tabindex="-1" class="page-panels flex-1 pb-40 md:pb-64">
     <h1 class="sr-only">한국일보 기술 블로그</h1>
-    {posts[0] ? <FeaturedHero post={posts[0]} /> : <EmptyHero />}
-    <div class="page-container pb-48 md:pb-64">
-      <TaglineBanner />
+    <HomeHero posts={posts} />
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,2.08fr)_minmax(0,1fr)]">
+      <CulturePanel />
+      <ApplyPanel />
     </div>
-    <CategoryBand />
-    <SeriesSection />
-    <!-- scroll-mt: 고정된 헤더(76) + GNB(56) 바로 아래에 맞춘다. 글 목록은 화면에 보일 때 붙는다 -->
-    <section id="posts" class="page-container scroll-mt-132 py-64 md:py-80">
-      <PostFeed client:visible posts={posts} lead="개발팀이 요즘 붙잡고 있는 것," title="전체 글" />
-    </section>
+    <ProductPanel />
   </main>
 </BaseLayout>

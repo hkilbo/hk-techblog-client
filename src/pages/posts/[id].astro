@@ -14,7 +14,7 @@ export async function getStaticPaths() {
   return (await getPosts()).map((post) => ({ params: { id: post.id }, props: { post } }));
 }
 
-// DESIGN.md §8. 본문 열 896px + 목차 224px, lg 미만은 한 열
+// DESIGN.md §8. 본문 열 896px(흰 패널) + 목차 224px, lg 미만은 한 열
 const { post } = Astro.props as InferGetStaticPropsType<typeof getStaticPaths>;
 const result = await renderPost(post.id);
 if (!result) throw new Error(`글이 없습니다: ${post.id}`); // getStaticPaths가 있는 글만 넘기므로 생기면 빌드 버그다
@@ -31,9 +31,9 @@ const toc = headings.filter((heading) => heading.depth === 2);
   publishedAt={post.publishedAt}
 >
   <main id="main" tabindex="-1" class="flex-1">
-    <article class="page-container py-48 md:py-64">
+    <article class="page-panels pb-40 md:pb-64">
       <div class="lg:grid lg:grid-cols-[minmax(0,896px)_224px] lg:justify-between lg:gap-40">
-        <div class="min-w-0">
+        <div class="panel min-w-0">
           <header>
             <p class="text-12 text-muted">
               <span class="font-bold text-accent">
@@ -45,8 +45,8 @@ const toc = headings.filter((heading) => heading.depth === 2);
             </p>
             <h1 class="mt-16 text-36 font-extrabold tracking-tight text-foreground md:text-48">{post.title}</h1>
             <p class="mt-16 text-17 text-muted">{post.summary}</p>
-            {/* 요약과 본문 사이의 저자·태그 상자. 시리즈 상자처럼 surface 면으로 나눈다 */}
-            <div class="mt-32 rounded-12 bg-surface p-20">
+            {/* 요약과 본문 사이의 저자·태그 상자. 시리즈 상자처럼 chip 면으로 나눈다 */}
+            <div class="mt-32 rounded-12 bg-chip p-20">
               <p class="flex items-baseline gap-8 text-14">
                 <span class="font-semibold text-foreground">{post.author.name}</span>
                 <span class="text-muted">{post.author.role}</span>
@@ -78,7 +78,7 @@ const toc = headings.filter((heading) => heading.depth === 2);
 
         {toc.length > 0 && (
           <aside class="hidden lg:block">
-            <nav aria-label="목차" class="sticky top-140">
+            <nav aria-label="목차" class="sticky top-140 pt-36">
               <p class="text-14 font-semibold text-foreground">On this page</p>
               <ul class="mt-12 flex flex-col gap-8 border-l border-line pl-16">
                 {toc.map((heading) => (
@@ -95,7 +95,7 @@ const toc = headings.filter((heading) => heading.depth === 2);
       </div>
 
       {related.length > 0 && (
-        <section aria-labelledby="related-title" class="mt-80 border-t border-line pt-40">
+        <section aria-labelledby="related-title" class="panel">
           <HighlightTitle id="related-title" lead="이 글이 좋았다면," keyword="관련 글" />
           <ul class="mt-24 grid gap-32 md:grid-cols-3">
             {related.map((relatedPost) => (

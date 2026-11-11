@@ -2,7 +2,6 @@
 import type { InferGetStaticPropsType } from 'astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import HighlightTitle from '@/components/brand/HighlightTitle.astro';
-import IconicMark from '@/components/brand/IconicMark.astro';
 import { PostList } from '@/components/post/PostList';
 import { getPosts, tagSlug } from '@/lib/posts';
 
@@ -21,15 +20,13 @@ const posts = (await getPosts()).filter((post) => post.tags.some((tag) => tagSlu
 ---
 
 <BaseLayout title={`#${name} | 한국일보 기술 블로그`}>
-  <main id="main" tabindex="-1" class="page-container flex-1 py-64 md:py-80">
-    <!-- 제목은 TECH 심볼 옆에 둔다 -->
-    <div class="mb-40 flex items-center gap-16 md:gap-24">
-      <IconicMark />
-      <div class="flex flex-wrap items-center gap-12">
+  <main id="main" tabindex="-1" class="page-panels flex-1 pb-40 md:pb-64">
+    <section class="panel">
+      <div class="mb-24 flex flex-wrap items-center gap-12">
         <HighlightTitle as="h1" lead="태그로 모아 본," keyword={`#${name}`} />
         <span class="rounded-4 bg-accent px-8 py-2 text-12 font-bold text-background">{posts.length}</span>
       </div>
-    </div>
-    <PostList posts={posts} headingAs="h2" />
+      <PostList posts={posts} headingAs="h2" />
+    </section>
   </main>
 </BaseLayout>

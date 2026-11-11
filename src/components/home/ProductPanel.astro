@@ -1,0 +1,63 @@
+---
+import PanelTitle from '@/components/brand/PanelTitle.astro';
+import { SERVICES } from '@/data/services';
+import { withBase } from '@/lib/paths';
+
+// 편집국이 매일 쓰는 CMS를 크게 두고 '쓰는 중' 화면을 그린다. 나머지는 2열. 이름이 바뀌어 못 찾으면 첫 서비스가 크게 나온다
+const featured = SERVICES.find(({ name }) => name === '기사 생산 CMS') ?? SERVICES[0];
+const rest = SERVICES.filter((service) => service !== featured);
+---
+
+<section class="panel">
+  <PanelTitle title="Product" href={withBase('/product/')} note="만들고 운영하는 서비스" />
+  <!-- CMS 칸이 넓은 화면에서 두 줄을 차지하고, 나머지는 오른쪽 2열. 칸 사이에 구분선(grid-lines) -->
+  <div class="grid-lines mt-8 sm:[--gutter:1.6rem] md:[--gutter:2.4rem]">
+    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)_minmax(0,1fr)]">
+      <li class="flex flex-col py-20 sm:col-span-2 md:py-24 lg:col-span-1 lg:row-span-2">
+        <p class="text-12 font-bold text-accent">{featured.kind}</p>
+        <h3 class="mt-4 text-22 font-extrabold text-foreground">{featured.name}</h3>
+        <p class="mt-8 max-w-420 text-14 text-muted md:text-15">{featured.description}</p>
+        <!-- 기사 작성 화면을 흉내 낸 장식. 마지막 줄이 계속 써진다 -->
+        <div aria-hidden="true" class="mt-24 rounded-8 bg-background px-18 py-16 lg:mt-auto">
+          <p class="flex items-center justify-between text-12 text-muted">
+            기사 작성
+            <span class="rounded-4 bg-accent px-8 py-2 font-bold text-background">출고</span>
+          </p>
+          <span class="mt-12 block h-7 w-11/12 rounded-4 bg-line"></span>
+          <span class="mt-8 block h-7 w-3/4 rounded-4 bg-line"></span>
+          <span class="writing mt-8 block h-7 w-7/12 rounded-4 bg-muted"></span>
+        </div>
+      </li>
+      {rest.map(({ kind, name, description }) => (
+        <li class="py-20 md:py-24">
+          <p class="text-12 font-bold text-accent">{kind}</p>
+          <h3 class="mt-4 text-16 font-bold text-foreground">{name}</h3>
+          <p class="mt-4 text-14 text-muted">{description}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .writing {
+    transform-origin: left;
+    animation: writing 4.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+
+  @keyframes writing {
+    0% {
+      transform: scaleX(0.08);
+    }
+    70%,
+    100% {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .writing {
+      animation: none;
+    }
+  }
+</style>

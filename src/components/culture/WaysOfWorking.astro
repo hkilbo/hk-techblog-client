@@ -1,0 +1,26 @@
+---
+import { WAYS_OF_WORKING } from '@/data/culture';
+---
+
+<!-- 일하는 방식과 복지(홈 Culture 패널·Culture 페이지). 모든 항목을 같은 크기 칸으로 두고(넓은 화면 3열) 칸 사이에 구분선(grid-lines)을 긋는다.
+     칸에 좌우 여백을 준 만큼 목록을 양옆으로 당겨, 첫 열 글자가 패널 제목과 줄을 맞춘다 -->
+<div class="grid-lines mt-8 sm:[--gutter:1.6rem] md:[--gutter:2.4rem]">
+  <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+    {WAYS_OF_WORKING.map(({ icon: Icon, title, description, options }) => (
+      <li class="py-20 md:py-24">
+        <span class="flex size-40 items-center justify-center rounded-pebble bg-accent/12 text-accent">
+          <Icon class="size-20" stroke-width={1.75} aria-hidden="true" />
+        </span>
+        <h3 class="mt-12 text-16 font-bold text-foreground">{title}</h3>
+        <p class="mt-4 text-14 text-muted">{description}</p>
+        {options && (
+          <ul class="mt-12 flex flex-wrap gap-6">
+            {options.map((option) => (
+              <li class="rounded-full bg-chip px-12 py-4 text-12 font-semibold text-foreground">{option}</li>
+            ))}
+          </ul>
+        )}
+      </li>
+    ))}
+  </ul>
+</div>

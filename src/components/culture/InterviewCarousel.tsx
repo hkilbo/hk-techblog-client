@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import ReactSlick, { type CustomArrowProps, type Settings } from 'react-slick';
+import ReactSlick, { type Settings } from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import type { Post } from '@/lib/posts';
 import { InterviewCard } from './InterviewCard';
@@ -14,24 +13,8 @@ const SLIDE_SPEED_MS = 500;
 const MOBILE_MAX_PX = 767;
 const TABLET_MAX_PX = 1023;
 
-function ArrowButton({ direction, onClick }: CustomArrowProps & { direction: 'prev' | 'next' }) {
-  const isPrev = direction === 'prev';
-  const Icon = isPrev ? ArrowLeft : ArrowRight;
-  return (
-    <button
-      type="button"
-      aria-label={isPrev ? '이전 인터뷰' : '다음 인터뷰'}
-      onClick={onClick}
-      // 끝에 닿으면 react-slick이 onClick을 비운다
-      disabled={!onClick}
-      className={`absolute top-0 ${isPrev ? 'left-0' : 'right-0'} hidden size-56 items-center justify-center rounded-8 bg-foreground/10 text-foreground transition-colors hover:bg-foreground/20 active:scale-98 disabled:opacity-30 disabled:hover:bg-foreground/10 md:flex`}
-    >
-      <Icon className="size-24" strokeWidth={1.75} aria-hidden="true" />
-    </button>
-  );
-}
-
-// 인터뷰 카드를 한 화면에 lg 4장, md 2장, 모바일 1장 보여 주고 한 장씩 넘긴다. 카드는 page-container 밖으로 나가지 않는다
+// 인터뷰 카드를 한 화면에 lg 4장, md 2장, 모바일 1장 보여 준다. 화살표 없이 밀어서(마우스는 끌어서) 넘기고, 아래 점으로 위치를 보여 준다.
+// 점은 버튼이라 키보드로도 넘길 수 있다. 카드가 한 화면에 다 들어가면 react-slick이 점을 그리지 않는다
 export function InterviewCarousel({ posts }: { posts: Post[] }) {
   // 하이드레이션 뒤에 정해진다. 그 전에는 interviewCarousel.css가 SSR 배치(4장)를 화면 폭에 맞춘다
   const [speed, setSpeed] = useState<number>();
@@ -51,10 +34,9 @@ export function InterviewCarousel({ posts }: { posts: Post[] }) {
     speed: speed ?? SLIDE_SPEED_MS,
     slidesToShow: 4,
     slidesToScroll: 1,
-    arrows: true,
-    prevArrow: <ArrowButton direction="prev" />,
-    nextArrow: <ArrowButton direction="next" />,
-    // 모바일은 화살표 대신 점으로 위치를 보여 준다
+    arrows: false,
+    dots: true,
+    swipeToSlide: true,
     dotsClass: 'mt-24 flex justify-center',
     appendDots: (dots) => <ul>{dots}</ul>,
     customPaging: (index) => (
@@ -66,14 +48,13 @@ export function InterviewCarousel({ posts }: { posts: Post[] }) {
     ),
     responsive: [
       { breakpoint: TABLET_MAX_PX, settings: { slidesToShow: 2 } },
-      { breakpoint: MOBILE_MAX_PX, settings: { slidesToShow: 1, arrows: false, dots: true } },
+      { breakpoint: MOBILE_MAX_PX, settings: { slidesToShow: 1 } },
     ],
   };
 
   return (
-    <div ref={rootRef} className="interview-carousel mt-32 md:mt-40" data-ready={speed !== undefined || undefined}>
-      {/* 화살표는 .slick-slider 기준 absolute라서, 화살표 줄(56px + 24px) 자리를 여기에 둔다 */}
-      <Slider {...settings} className="md:pt-80">
+    <div ref={rootRef} className="interview-carousel mt-16" data-ready={speed !== undefined || undefined}>
+      <Slider {...settings}>
         {posts.map((post) => (
           <InterviewCard key={post.id} post={post} />
         ))}

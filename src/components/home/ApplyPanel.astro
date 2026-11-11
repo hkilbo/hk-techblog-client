@@ -1,0 +1,24 @@
+---
+import { ArrowUpRight } from '@lucide/astro';
+import { TALENTS } from '@/data/culture';
+import { APPLY_URL } from '@/data/links';
+---
+
+<!-- Culture 패널 옆의 채용 패널. 다른 패널보다 한 단계 밝은 면(chip)으로 구분한다 -->
+<aside aria-labelledby="apply-title" class="flex flex-col bg-chip px-16 py-24 text-foreground md:rounded-8 md:p-36">
+  <h2 id="apply-title" class="text-22 font-extrabold">
+    이런 동료를 찾습니다
+  </h2>
+  <ul class="mt-16 mb-24 flex flex-col gap-8 text-14 break-keep opacity-70">
+    {TALENTS.map((talent) => (
+      <li>{talent}</li>
+    ))}
+  </ul>
+  <a
+    href={APPLY_URL}
+    class="mt-auto flex h-42 w-fit items-center gap-6 rounded-4 bg-background px-18 text-14 font-bold text-foreground transition active:scale-98"
+  >
+    채용 공고 보기
+    <ArrowUpRight class="size-16" stroke-width={2} aria-hidden="true" />
+  </a>
+</aside>

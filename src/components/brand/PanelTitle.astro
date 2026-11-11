@@ -1,0 +1,41 @@
+---
+import { ChevronRight } from '@lucide/astro';
+
+interface Props {
+  title: string;
+  /** 있으면 제목이 그 페이지로 가는 링크가 되고 › 가 붙는다 */
+  href?: string;
+  /** 제목 옆에 작게 붙이는 설명 */
+  note?: string;
+}
+
+const { title, href, note } = Astro.props;
+const Title = href ? 'a' : 'span';
+---
+
+<!-- 한국일보 홈 패널의 '섹션명 ›' 제목 줄. 오른쪽 끝에 버튼을 slot으로 붙일 수 있다 -->
+<div class="flex flex-wrap items-center gap-12">
+  <h2>
+    <Title
+      href={href}
+      class:list={[
+        'group flex items-center gap-2 text-20 font-extrabold text-foreground',
+        href && 'transition-colors hover:text-accent',
+      ]}
+    >
+      {title}
+      {href && (
+        <ChevronRight
+          class="size-20 transition-transform group-hover:translate-x-4 motion-reduce:transition-none"
+          aria-hidden="true"
+        />
+      )}
+    </Title>
+  </h2>
+  {note && <span class="text-14 text-muted">{note}</span>}
+  {Astro.slots.has('default') && (
+    <div class="ml-auto">
+      <slot />
+    </div>
+  )}
+</div>

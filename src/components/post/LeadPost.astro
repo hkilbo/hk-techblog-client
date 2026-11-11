@@ -1,0 +1,43 @@
+---
+import { CATEGORY_LABEL, TOPIC_LABEL } from '@/data/categories';
+import type { Post } from '@/lib/posts';
+import { postPath } from '@/lib/paths';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+---
+
+<!-- 첫 패널 오른쪽의 최신 글(홈·Tech). 머리줄과 아래 한 줄은 글 목록(PostItem)과 같은 표기다 -->
+<a href={postPath(post.id)} class="group block">
+  <p class="flex items-center gap-10 text-12 font-extrabold text-muted uppercase md:text-14">
+    <span>
+      {CATEGORY_LABEL[post.category]}
+      {post.topic && ` · ${TOPIC_LABEL[post.topic]}`}
+    </span>
+    <span class="flex items-center gap-6 text-12 font-bold text-accent">
+      <span class="relative size-6 rounded-full bg-accent" aria-hidden="true">
+        <span class="absolute inset-0 animate-pulse-ring rounded-full bg-accent motion-reduce:animate-none"></span>
+      </span>
+      최신 글
+    </span>
+  </p>
+  <div class="mt-12 aspect-2/1 overflow-hidden rounded-4">
+    <img
+      src={post.thumbnail}
+      alt=""
+      fetchpriority="high"
+      class="size-full object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
+    />
+  </div>
+  <h2 class="mt-16 text-22 font-extrabold tracking-tight text-foreground transition-colors group-hover:text-accent md:text-28">
+    {post.title}
+  </h2>
+  <p class="mt-8 line-clamp-2 text-14 text-muted md:text-15">{post.summary}</p>
+  <p class="mt-12 text-12 text-muted">
+    {post.author.name} · <time datetime={post.publishedAt}>{post.publishedAt.replaceAll('-', '.')}</time> ·{' '}
+    {post.readingMinutes} min
+  </p>
+</a>

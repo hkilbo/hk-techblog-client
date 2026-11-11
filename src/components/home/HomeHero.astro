@@ -1,0 +1,102 @@
+---
+import HeroPanel from '@/components/brand/HeroPanel.astro';
+import LeadPost from '@/components/post/LeadPost.astro';
+import { PostItem } from '@/components/post/PostItem';
+import { ChevronRight } from '@lucide/astro';
+import { type Post, getSeriesPosts } from '@/lib/posts';
+import { getSeries } from '@/lib/series';
+import { postPath, seriesPath } from '@/lib/paths';
+
+interface Props {
+  /** 최신순 전체 글 */
+  posts: Post[];
+}
+
+// 오른쪽은 최신 글과 그다음 글. 전체 글은 Tech 페이지에 있다
+const { posts } = Astro.props;
+const [lead, next] = posts;
+
+// 시리즈 하나: 오른쪽 두 편 말고 가장 최근에 글이 올라온 시리즈. 그 시리즈의 최근 글 두 편을 세로로 보여 준다.
+// 오른쪽에 이미 나온 글은 카드에서 뺀다. 시리즈가 없으면 두지 않는다
+const shown = new Set([lead?.id, next?.id]);
+const seriesId = posts.find((post) => post.series && !shown.has(post.id))?.series?.id;
+const [series, seriesPosts] = seriesId
+  ? await Promise.all([getSeries(seriesId), getSeriesPosts(seriesId)])
+  : [undefined, []];
+const seriesCards = seriesPosts
+  .filter((post) => !shown.has(post.id))
+  .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+  .slice(0, 2);
+---
+
+<HeroPanel
+  as="p"
+  lines={[
+    { lead: '세상을 잇는', keyword: '기술', end: ',' },
+    { lead: '경험을 만드는', keyword: '개발', end: '.' },
+  ]}
+  description="다양한 관점과 아이디어를 디지털 서비스로 구현하는 한국일보 개발팀의 기술과 개발 이야기를 공유합니다."
+>
+  {series && (
+    <section slot="left" class="border-t border-line pt-24 lg:border-t-0 lg:pt-0">
+      <!-- 머리말은 오른쪽 글의 분류 줄(TECH · AI/DB)과 같은 모양이다 -->
+      <p class="text-12 font-extrabold text-muted uppercase md:text-14">Series</p>
+      <!-- 제목 옆 초록 숫자는 시리즈 글 수. '전체 글 11'의 숫자와 같은 모양이다 -->
+      <h2 class="mt-4">
+        <a
+          href={seriesPath(series.id)}
+          class="group flex items-center gap-8 text-20 font-extrabold text-foreground transition-colors hover:text-accent"
+        >
+          {series.title}
+          <span class="flex items-center gap-2 text-14 font-bold text-accent tabular-nums">
+            {seriesPosts.length}
+            <span class="sr-only">편</span>
+            <ChevronRight
+              class="size-20 shrink-0 text-foreground transition-transform group-hover:translate-x-4 group-hover:text-accent motion-reduce:transition-none"
+              aria-hidden="true"
+            />
+          </span>
+        </a>
+      </h2>
+      <!-- 시리즈 글을 세로로 쌓는다. 글 목록(PostItem)처럼 글은 왼쪽, 썸네일은 오른쪽 -->
+      <ul class="mt-8 divide-y divide-line">
+        {seriesCards.map((post) => (
+          <li>
+            <a href={postPath(post.id)} class="group flex items-center gap-16 py-16">
+              <div class="min-w-0 flex-1">
+                <h3 class="line-clamp-2 text-15 font-semibold text-foreground transition-colors group-hover:text-accent">
+                  {post.title}
+                </h3>
+                <p class="mt-8 text-12 text-muted tabular-nums">
+                  <time datetime={post.publishedAt}>{post.publishedAt.replaceAll('-', '.')}</time>
+                </p>
+              </div>
+              <div class="aspect-5/3 w-100 shrink-0 overflow-hidden rounded-4 md:w-120">
+                <img
+                  src={post.thumbnail}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  class="size-full object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
+                />
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+  {lead ? (
+    <>
+      <LeadPost post={lead} />
+      {next && (
+        <div class="mt-24 border-t border-line pt-24">
+          <PostItem post={next} />
+        </div>
+      )}
+    </>
+  ) : (
+    // 다른 빈 목록(PostList)과 같은 말을 쓴다
+    <p class="py-80 text-center text-15 text-muted">아직 올라온 글이 없어요. 첫 글을 준비하고 있어요.</p>
+  )}
+</HeroPanel>

@@ -1,8 +1,8 @@
 import { LayoutDashboard, Newspaper, Plug, Puzzle, Trophy } from '@lucide/astro';
 
 /**
- * Product 페이지의 서비스 카드. 개발팀이 만드는 서비스를 모두 적지 않는다(너무 많고, 공개하기 어려운 것도 있다).
- * 대표 서비스 H.AI는 components/product/HaiSearchCard.astro가 크게 그리고, 나머지는 '이 밖의 서비스' 카드로 묶는다.
+ * Product 페이지의 프로덕트 칸. 개발팀이 만드는 것을 모두 적지 않는다(너무 많고, 공개하기 어려운 것도 있다).
+ * 대표 프로덕트 H.AI는 components/product/HaiSearchCard.astro가 크게 그리고, 나머지는 '이 밖의 프로덕트' 칸으로 묶는다.
  * 설명은 공개된 내용만 쓴다. 내부 주소·구조·이름은 적지 않는다.
  */
 export const SERVICES = [

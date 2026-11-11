@@ -1,4 +1,6 @@
 ---
+import { ArrowUpRight } from '@lucide/astro';
+import { APPLY_URL } from '@/data/links';
 import { withBase } from '@/lib/paths';
 
 const MENUS = [
@@ -6,22 +8,30 @@ const MENUS = [
   { label: 'Tech', href: withBase('/tech/') },
   { label: 'Product', href: withBase('/product/') },
   { label: 'Culture', href: withBase('/culture/') },
-  // Apply는 블로그 안 페이지가 아니라 한국일보 그룹 채용 홈페이지로 바로 간다. 채용 링크는 여기 하나만 둔다
-  { label: 'Apply', href: 'https://hankookilbo.careerlink.kr/' },
+  // Apply는 블로그 안 페이지가 아니라 한국일보 그룹 채용 홈페이지로 바로 간다
+  { label: 'Apply', href: APPLY_URL },
 ];
+
+// Home은 주소가 똑같을 때만, 나머지는 그 아래 주소까지 지금 메뉴로 본다
+const here = Astro.url.pathname;
+const isCurrent = (href: string) => (href === withBase('/') ? here === href : here.startsWith(href));
 ---
 
-<!-- 바탕은 interactive-header와 같은 검정 80%(#000C) -->
-<nav aria-label="블로그 메뉴" class="sticky top-64 z-600 border-b border-line bg-background/80 backdrop-blur xl:top-76">
-  <div class="page-container flex h-48 items-center md:h-56">
-    <ul class="flex gap-16 md:gap-28">
-      {MENUS.map(({ label, href }) => (
-        <li>
-          <a href={href} class="text-14 font-medium text-muted transition-colors hover:text-foreground md:text-15">
-            {label}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </div>
+<!-- 바탕은 바로 위 interactive-header(다크, data-gnb="solid")와 같은 검정 80%(#000C)다. 헤더처럼 흐림 효과는 없다 -->
+<nav aria-label="블로그 메뉴" class="sticky top-64 z-600 bg-black/80 xl:top-76">
+  <!-- 좁은 화면에서 메뉴가 넘치면 메뉴만 옆으로 밀린다 -->
+  <ul class="page-container flex h-48 items-center gap-16 overflow-x-auto [scrollbar-width:none] md:h-56 md:gap-32">
+    {MENUS.map(({ label, href }) => (
+      <li class="shrink-0">
+        <a
+          href={href}
+          aria-current={isCurrent(href) ? 'page' : undefined}
+          class="flex items-center gap-2 text-16 font-bold text-foreground transition-colors hover:text-accent aria-[current=page]:text-accent md:text-18"
+        >
+          {label}
+          {href === APPLY_URL && <ArrowUpRight class="size-16" stroke-width={2} aria-hidden="true" />}
+        </a>
+      </li>
+    ))}
+  </ul>
 </nav>

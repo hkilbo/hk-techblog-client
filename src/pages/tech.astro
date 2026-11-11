@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import HighlightTitle from '@/components/brand/HighlightTitle.astro';
-import IconicMark from '@/components/brand/IconicMark.astro';
+import PageTitle from '@/components/brand/PageTitle.astro';
 import { PostFeed } from '@/components/post/PostFeed';
 import { getPosts } from '@/lib/posts';
 
@@ -9,12 +8,16 @@ const posts = await getPosts('tech');
 ---
 
 <BaseLayout title="Tech | 한국일보 기술 블로그">
-  <main id="main" tabindex="-1" class="page-container flex-1 pt-48 pb-64 md:pt-64 md:pb-80">
-    <!-- 제목은 페이지 심볼 옆에 둔다 -->
-    <div class="mb-40 flex items-center gap-16 md:mb-48 md:gap-24">
-      <IconicMark variant="tech" />
-      <HighlightTitle as="h1" lead="뉴스를 만드는 기술," keyword="Tech" />
+  <main id="main" tabindex="-1" class="page-panels flex-1 pb-40 md:pb-64">
+    <!-- 제목은 패널 밖 페이지 바탕에 둔다. 넓은 화면에서는 패널 왼쪽 끝에, 좁은 화면에서는 패널 안 글자와 줄을 맞춘다 -->
+    <div class="px-16 pt-16 pb-16 md:px-0 md:pt-24 md:pb-32">
+      <PageTitle
+        lines={[{ lead: '뉴스를 만드는', keyword: '기술' }]}
+        description="한국일보 개발팀이 서비스를 만들고 운영하며 쓴 기술 글을 분야별로 모았습니다."
+      />
     </div>
-    <PostFeed client:load posts={posts} title="전체 글" withHomeLink />
+    <section class="panel">
+      <PostFeed client:load posts={posts} title="전체 글" />
+    </section>
   </main>
 </BaseLayout>

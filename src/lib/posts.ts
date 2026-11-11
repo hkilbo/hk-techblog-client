@@ -15,7 +15,7 @@ export interface Post {
   category: PostCategory;
   /** Tech 글만 가진다 */
   topic?: TechTopic;
-  /** 개발자 인터뷰 글만 가진다. author가 인터뷰한 개발자이고, Culture 첫 화면 캐러셀에 나온다 */
+  /** 인터뷰 글만 가진다(개발자·기획자 등). author가 인터뷰한 사람이고, Culture 인터뷰 캐러셀에 나온다 */
   kind?: 'interview';
   /** 시리즈에 속한 글만 가진다. order는 1부터 */
   series?: { id: string; order: number };

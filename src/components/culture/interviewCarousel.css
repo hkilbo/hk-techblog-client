@@ -13,6 +13,14 @@
   height: 100%;
 }
 
+/* 마우스로 끌어 넘길 수 있다는 표시 */
+.interview-carousel .slick-list {
+  cursor: grab;
+}
+.interview-carousel .slick-list:active {
+  cursor: grabbing;
+}
+
 /* react-slick은 SSR을 기본 설정(4장)으로 그린다. 하이드레이션 전에는 화면 폭에 맞는 장수로 보여 준다 */
 .interview-carousel:not([data-ready]) .slick-track {
   width: auto !important;

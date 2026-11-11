@@ -43,21 +43,35 @@
 
   --container-*: initial;
 
-  /* 브랜드 로고(public/brand)에서 잰 라임, 에러 일러스트에서 잰 코랄. 테마와 상관없이 같다 */
-  --color-brand-lime: #88f03e;
-  --color-brand-coral: #ff6363;
+  /* '최신 글' 점에서 퍼지는 고리 */
+  --animate-pulse-ring: pulse-ring 1.8s ease-out infinite;
+
+  @keyframes pulse-ring {
+    from {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    to {
+      transform: scale(3.2);
+      opacity: 0;
+    }
+  }
 }
 
-/* 색 출처: hk-home-client(한국일보 홈)의 다크 모드. accent는 huick 색이다. 규칙은 DESIGN.md §2. 다크만 쓴다 */
+/*
+ * 색 출처: 한국일보 홈(hk-home-client)의 다크 토큰. 바탕(background) 위에 한 단계 밝은 패널(surface)을 올리고,
+ * 패널 안의 옅은 면(칩·코드)은 chip이다. accent는 한국일보 그린. 다크만 쓴다
+ */
 :root {
   color-scheme: dark;
-  --background: #000000;
-  --foreground: #ffffff;
-  --body: #dddddd;
-  --muted: #cccccc;
-  --line: #444444;
-  --accent: #ccff00;
+  --background: #0f0f0f;
   --surface: #1a1a1a;
+  --chip: #2a2a2a;
+  --foreground: #f2f2f2;
+  --body: #dddddd;
+  --muted: #b0b0b0;
+  --line: #2f2f2f;
+  --accent: #49e587;
 }
 
 @theme inline {
@@ -67,6 +81,7 @@
   --color-line: var(--line);
   --color-accent: var(--accent);
   --color-surface: var(--surface);
+  --color-chip: var(--chip);
   --font-sans: 'Pretendard Variable', system-ui, -apple-system, 'Apple SD Gothic Neo', sans-serif;
 }
 
@@ -86,12 +101,75 @@
   }
 }
 
-/* 모눈종이 바탕(huick 띠 배너에서 가져왔다): line 색 반투명 1px 선을 24px 간격으로. 띠 배너와 Culture 히어로가 쓴다 */
+/* 한국일보 홈처럼 회색 바탕에 흰 패널을 8px 간격으로 쌓는다. 좁은 화면에서는 패널이 화면 폭을 다 쓴다 */
+@utility page-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+  max-width: 128rem;
+  margin-inline: auto;
+  /* GNB와 첫 패널 사이. 좁은 화면은 패널 사이 간격과 같고, 패널이 떠 보이는 넓은 화면에서는 더 띄운다 */
+  padding-top: 0.8rem;
+
+  @media (width >= 768px) {
+    padding-top: 2.4rem;
+    padding-inline: 2rem;
+  }
+
+  @media (width >= 1280px) {
+    padding-inline: 4rem;
+  }
+}
+
+@utility panel {
+  background-color: var(--surface);
+  padding: 2.4rem 1.6rem;
+
+  @media (width >= 768px) {
+    border-radius: 0.8rem;
+    padding: 3.6rem;
+  }
+}
+
+/* 모눈종이 바탕(huick 띠 배너에서 가져왔다): line 색 1px 선을 24px 간격으로. panel과 같이 쓴다. Culture 인터뷰 패널이 쓴다 */
 @utility grid-paper {
   background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--line) 50%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--line) 50%, transparent) 1px, transparent 1px);
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
   background-size: 24px 24px;
+}
+
+/*
+ * 그리드 칸 구분선. 한국일보 홈 '칼럼' 모듈처럼 줄 사이에는 이어진 가로선, 열 사이에는 위아래를 띄워 가로선에 닿지 않는
+ * 세로선을 긋는다. 그리드(ul·ol)를 감싼 상자에 붙인다. 칸마다 위 선(border-top)과 왼쪽 세로선(::before)을 긋고 그리드를
+ * 1px 위·왼쪽으로 당겨, 맨 위 가로선과 맨 왼쪽 세로선은 overflow-hidden이 잘라 낸다.
+ * --gutter: 칸 좌우 여백. 그만큼 상자를 양옆으로 당겨 첫 열 글자가 패널 제목과 줄을 맞추고, 가로선 양 끝은 글자 폭에 맞춰 자른다.
+ * 칸 수가 열 수로 나눠떨어지지 않아도 빈 자리에 선이 생기지 않는다. 일하는 방식, 이런 동료, Product 칸(홈·Product 페이지)이 쓴다
+ */
+@utility grid-lines {
+  overflow: hidden;
+  margin-inline: calc(-1 * var(--gutter, 0px));
+  clip-path: inset(0 var(--gutter, 0px));
+
+  & > * {
+    margin-top: -1px;
+    margin-left: -1px;
+  }
+
+  & > * > * {
+    position: relative;
+    padding-inline: var(--gutter, 0px);
+    border-top: 1px solid var(--line);
+  }
+
+  & > * > *::before {
+    content: '';
+    position: absolute;
+    inset-block: 2rem;
+    left: 0;
+    border-left: 1px solid var(--line);
+  }
 }
 
 @layer base {
@@ -159,7 +237,7 @@
 
     /* 인라인 코드. 코드 블록 안의 code는 아래 pre 규칙을 따른다 */
     & :not(pre) > code {
-      @apply rounded-4 bg-surface px-6 py-2 text-15;
+      @apply rounded-4 bg-chip px-6 py-2 text-15;
       font-family: inherit;
     }
 
@@ -173,7 +251,7 @@
       }
 
       & th {
-        @apply bg-surface font-bold text-foreground;
+        @apply bg-chip font-bold text-foreground;
       }
     }
 
@@ -185,10 +263,10 @@
       @apply text-accent underline;
     }
 
-    /* 코드 블록: Shiki가 색을 입힌다. 바탕은 surface, 글꼴은 Pretendard(DESIGN.md §3), 오른쪽 위에 언어 이름 */
+    /* 코드 블록: Shiki가 색을 입힌다(github-dark). 바탕은 chip, 글꼴은 Pretendard(DESIGN.md §3), 오른쪽 위에 언어 이름 */
     & > pre.astro-code {
       @apply relative mt-20 overflow-x-auto rounded-8 px-20 pt-34 pb-16 text-14 leading-[1.7];
-      background-color: var(--surface) !important;
+      background-color: var(--chip) !important;
       font-family: var(--font-sans);
 
       & code {

@@ -13,7 +13,7 @@ const posts = defineCollection({
       category: z.enum(['tech', 'product', 'culture']),
       /** Tech 글만 */
       topic: z.enum(['frontend', 'backend', 'ai-db', 'cloud']).optional(),
-      /** 개발자 인터뷰만. author가 인터뷰한 사람이다 */
+      /** 인터뷰 글만(개발자·기획자 등). author가 인터뷰한 사람이다 */
       kind: z.literal('interview').optional(),
       /** 시리즈 글만. order는 1부터 */
       series: z.object({ id: reference('series'), order: z.number().int().positive() }).optional(),

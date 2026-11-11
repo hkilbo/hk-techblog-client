@@ -16,15 +16,15 @@ hk-tech-client/
     ├── layouts/            # BaseLayout: <head>, 헤더·GNB·푸터
     ├── components/<영역>/  # 화면 조각. 영역 폴더 한 단계만 둔다
     │   ├── layout/         # 헤더·GNB·푸터
-    │   ├── brand/          # huick 느낌 공통 조각: 아이코닉 심볼, 형광 밑줄 제목
-    │   ├── home/           # 홈 섹션
+    │   ├── brand/          # 여러 페이지가 같이 쓰는 조각: 형광펜 제목(PageTitle), 첫 패널(HeroPanel), 패널 제목, 형광 밑줄 제목
+    │   ├── home/           # 홈 패널
     │   ├── post/           # 글 목록·글 행·글 페이지 조각
-    │   ├── culture/        # 인터뷰 캐러셀
+    │   ├── culture/        # 인터뷰 캐러셀, 일하는 방식과 복지
     │   └── series/         # 시리즈 카드
     ├── lib/                # 데이터 읽기와 헬퍼: posts.ts, series.ts, paths.ts, fetchHtmlFragment.ts
-    ├── data/               # 고정 목록·상수: 카테고리, Product 서비스, Culture 복지
+    ├── data/               # 고정 목록·상수: 카테고리, Product 서비스, Culture 복지, 채용 링크
     ├── assets/             # 빌드 때 최적화할 이미지와 Pretendard 폰트
-    ├── styles/global.css   # 색·글꼴 토큰, Tailwind
+    ├── styles/global.css   # 색·글꼴 토큰(다크만), 패널 유틸리티, Tailwind
     └── content.config.ts   # 글·시리즈 frontmatter 스키마(Astro가 이 위치에서 찾는다)
 ```
 

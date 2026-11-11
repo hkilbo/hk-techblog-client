@@ -1,67 +1,60 @@
 ---
 import { Ellipsis } from '@lucide/astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import HighlightTitle from '@/components/brand/HighlightTitle.astro';
-import IconicMark from '@/components/brand/IconicMark.astro';
-import HaiSearchCard from '@/components/product/HaiSearchCard.astro';
+import HeroPanel from '@/components/brand/HeroPanel.astro';
+import PanelTitle from '@/components/brand/PanelTitle.astro';
 import { PostList } from '@/components/post/PostList';
+import HaiSearchCard from '@/components/product/HaiSearchCard.astro';
 import { SERVICES } from '@/data/services';
 import { getPosts } from '@/lib/posts';
 
-// 글 목록이 아니라 서비스 소개 페이지라 Tech처럼 분야 칩을 두지 않는다
+// 글 목록이 아니라 프로덕트 소개 페이지라 Tech처럼 분야 칩을 두지 않는다
 const posts = await getPosts('product');
 ---
 
 <BaseLayout title="Product | 한국일보 기술 블로그">
-  <main id="main" tabindex="-1" class="flex-1">
-    <section class="bg-background text-foreground">
-      <div class="page-container pt-48 pb-48 md:pt-64 md:pb-64">
-        <!-- 큰 제목은 페이지 심볼 옆에 둔다 -->
-        <div class="flex items-center gap-16 md:gap-24">
-          <IconicMark variant="product" />
-          <div class="min-w-0">
-            <h1 class="text-36 font-extrabold tracking-tight break-keep md:text-48">
-              한국일보 개발팀이
-              <br />
-              만들고 운영하는 서비스
-            </h1>
-          </div>
-        </div>
+  <main id="main" tabindex="-1" class="page-panels flex-1 pb-40 md:pb-64">
+    <!-- 오른쪽은 대표 프로덕트(H.AI) -->
+    <HeroPanel
+      lines={[{ lead: '한국일보 개발팀이' }, { lead: '만들고 운영하는' }, { keyword: '프로덕트' }]}
+      description="뉴스룸 안팎에서 쓰는 프로덕트와 내부 도구 가운데, 공개할 수 있는 것부터 소개합니다."
+    >
+      <HaiSearchCard />
+    </HeroPanel>
+
+    <section class="panel">
+      <PanelTitle title="프로덕트" />
+      <!-- 모두 적지 않고 마지막 칸 '이 밖의 프로덕트'로 묶는다. 넓은 화면 3열, 칸 사이에 구분선(grid-lines) -->
+      <div class="grid-lines mt-8 sm:[--gutter:1.6rem] md:[--gutter:2.4rem]">
+        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {SERVICES.map(({ icon: Icon, name, description }) => (
+            <li class="py-20 md:py-24">
+              <span class="flex size-40 items-center justify-center rounded-pebble bg-accent/12 text-accent">
+                <Icon class="size-20" stroke-width={1.75} aria-hidden="true" />
+              </span>
+              <h3 class="mt-12 text-16 font-bold text-foreground">{name}</h3>
+              <p class="mt-4 text-14 text-muted">{description}</p>
+            </li>
+          ))}
+          <li class="py-20 md:py-24">
+            <span class="flex size-40 items-center justify-center rounded-pebble border-[1.5px] border-dashed border-line text-muted">
+              <Ellipsis class="size-20" stroke-width={1.75} aria-hidden="true" />
+            </span>
+            <h3 class="mt-12 text-16 font-bold text-foreground">이 밖의 프로덕트</h3>
+            <p class="mt-4 text-14 text-muted">
+              뉴스룸 안팎에서 쓰는 프로덕트와 내부 도구가 더 있습니다. 모두 소개하기는 어려워서, 공개할 수 있는
+              이야기부터 아래 프로덕트 이야기에 씁니다.
+            </p>
+          </li>
+        </ul>
       </div>
     </section>
 
-    <section class="page-container py-64 md:py-80">
-      <HighlightTitle lead="직접 만들고 운영하는," keyword="서비스" />
-      <!-- 대표 서비스(H.AI)를 한 줄 전체로, 나머지는 카드로. 모두 적지 않고 마지막 카드로 묶는다 -->
-      <ul class="mt-24 grid gap-16 md:grid-cols-2 lg:grid-cols-3">
-        <li class="md:col-span-2 lg:col-span-3">
-          <HaiSearchCard />
-        </li>
-        {SERVICES.map(({ icon: Icon, kind, name, description }) => (
-          <li class="rounded-12 bg-surface p-24 md:p-32">
-            <p class="flex items-center gap-8 text-12 font-extrabold text-muted">
-              <Icon class="size-20 text-foreground" stroke-width={1.75} aria-hidden="true" />
-              {kind}
-            </p>
-            <h3 class="mt-16 text-22 font-bold text-foreground">{name}</h3>
-            <p class="mt-8 text-15">{description}</p>
-          </li>
-        ))}
-        <li class="rounded-12 border border-dashed border-line p-24 md:p-32">
-          <p class="flex items-center gap-8 text-12 font-extrabold text-muted">
-            <Ellipsis class="size-20 text-foreground" stroke-width={1.75} aria-hidden="true" />
-            그리고
-          </p>
-          <h3 class="mt-16 text-22 font-bold text-foreground">이 밖의 서비스</h3>
-          <p class="mt-8 text-15">
-            뉴스룸 안팎에서 쓰는 서비스와 내부 도구가 더 있습니다. 모두 소개하기는 어려워서, 공개할 수 있는 이야기부터
-            아래 서비스 이야기에 씁니다.
-          </p>
-        </li>
-      </ul>
-
-      <HighlightTitle lead="만들면서 배운 것," keyword="서비스 이야기" class="mt-80 mb-24" />
-      <PostList posts={posts} />
+    <section class="panel">
+      <PanelTitle title="프로덕트 이야기" />
+      <div class="mt-24">
+        <PostList posts={posts} />
+      </div>
     </section>
   </main>
 </BaseLayout>

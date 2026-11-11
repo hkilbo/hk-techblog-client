@@ -1,0 +1,10 @@
+---
+import PanelTitle from '@/components/brand/PanelTitle.astro';
+import WaysOfWorking from '@/components/culture/WaysOfWorking.astro';
+import { withBase } from '@/lib/paths';
+---
+
+<section class="panel">
+  <PanelTitle title="Culture" href={withBase('/culture/')} note="일하는 방식과 복지" />
+  <WaysOfWorking />
+</section>
