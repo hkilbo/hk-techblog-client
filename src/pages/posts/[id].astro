@@ -20,7 +20,6 @@ const result = await renderPost(post.id);
 if (!result) throw new Error(`글이 없습니다: ${post.id}`); // getStaticPaths가 있는 글만 넘기므로 생기면 빌드 버그다
 const { Content, headings, ogImage } = result;
 const related = await getRelatedPosts(post);
-// h3는 바로 위 h2의 하위 항목으로 들여 보인다. h4 이하는 목차가 길어져 넣지 않는다
 const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 ---
 
