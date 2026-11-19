@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" font-family="Pretendard, 'Noto Sans KR', sans-serif">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <g fill="none" stroke-width="6">
+    <rect x="170" y="215" width="260" height="200" rx="18" stroke="#64748b"/>
+    <rect x="770" y="215" width="260" height="200" rx="18" stroke="#38bdf8"/>
+  </g>
+  <path d="M250 270 L350 315 L250 360 z" fill="#64748b"/>
+  <path d="M850 270 L950 315 L850 360 z" fill="#38bdf8"/>
+  <g stroke="#e2e8f0" stroke-width="6" fill="none"><line x1="480" y1="315" x2="700" y2="315"/><path d="M680 290 L715 315 L680 340"/></g>
+  <g font-size="34" text-anchor="middle" fill="#e2e8f0">
+    <text x="300" y="480">ffmpeg 서버</text>
+    <text x="900" y="480">MediaConvert</text>
+  </g>
+</svg>

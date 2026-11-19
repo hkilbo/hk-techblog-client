@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="190" viewBox="0 0 1180 190" font-family="Pretendard, 'Noto Sans KR', sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+  </defs>
+  <rect width="1180" height="190" fill="#ffffff"/>
+  <g stroke-width="2">
+    <rect x="30" y="50" width="230" height="90" rx="10" fill="#f1f5f9" stroke="#475569"/>
+    <rect x="330" y="50" width="230" height="90" rx="10" fill="#fee2e2" stroke="#b91c1c"/>
+    <rect x="630" y="50" width="230" height="90" rx="10" fill="#f1f5f9" stroke="#475569"/>
+    <rect x="930" y="50" width="220" height="90" rx="10" fill="#e0f2fe" stroke="#0369a1"/>
+  </g>
+  <g font-size="18" text-anchor="middle" fill="#0f172a">
+    <text x="145" y="92">영상 등록</text>
+    <text x="445" y="92">인코딩</text>
+    <text x="745" y="92">영상 저장소 업로드</text>
+    <text x="1040" y="92">외부 채널 전송</text>
+  </g>
+  <g font-size="15" text-anchor="middle">
+    <text x="145" y="118" fill="#334155">VMS 서버</text>
+    <text x="445" y="118" fill="#b91c1c">전체 소요 시간의 약 78%</text>
+    <text x="745" y="118" fill="#334155">약 8%</text>
+    <text x="1040" y="118" fill="#334155">약 13%</text>
+  </g>
+  <g stroke="#475569" stroke-width="2" fill="none" marker-end="url(#a)">
+    <line x1="260" y1="95" x2="326" y2="95"/>
+    <line x1="560" y1="95" x2="626" y2="95"/>
+    <line x1="860" y1="95" x2="926" y2="95"/>
+  </g>
+  <g font-size="14" fill="#64748b">
+    <text x="30" y="30">운영 영상 10건의 단계별 소요 시간 합계 기준</text>
+    <text x="1150" y="170" text-anchor="end">유튜브 · 페이스북 · 네이버 TV</text>
+  </g>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="440" viewBox="0 0 1180 440" font-family="Pretendard, 'Noto Sans KR', sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+  </defs>
+  <rect width="1180" height="440" fill="#ffffff"/>
+  <g font-size="20" text-anchor="middle" fill="#0f172a">
+    <rect x="40" y="60" width="200" height="70" rx="10" fill="#e0f2fe" stroke="#0369a1" stroke-width="2"/><text x="140" y="102">VMS 서버</text>
+    <rect x="330" y="60" width="200" height="70" rx="10" fill="#fef3c7" stroke="#b45309" stroke-width="2"/><text x="430" y="102">원본 버킷 (S3)</text>
+    <rect x="620" y="60" width="200" height="70" rx="10" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/><text x="720" y="102">작업 생성 Lambda</text>
+    <rect x="910" y="60" width="200" height="70" rx="10" fill="#dcfce7" stroke="#15803d" stroke-width="2"/><text x="1010" y="102">MediaConvert</text>
+    <rect x="620" y="280" width="200" height="70" rx="10" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/><text x="720" y="322">상태 전달 Lambda</text>
+    <rect x="910" y="280" width="200" height="70" rx="10" fill="#fef3c7" stroke="#b45309" stroke-width="2"/><text x="1010" y="322">결과 버킷 (S3)</text>
+  </g>
+  <g stroke="#475569" stroke-width="2" fill="none" marker-end="url(#a)">
+    <line x1="240" y1="95" x2="326" y2="95"/>
+    <line x1="530" y1="95" x2="616" y2="95"/>
+    <line x1="820" y1="95" x2="906" y2="95"/>
+    <line x1="1010" y1="130" x2="1010" y2="276"/>
+    <line x1="950" y1="130" x2="800" y2="277"/>
+    <polyline points="620,315 160,315 160,134"/>
+    <polyline points="1010,350 1010,410 100,410 100,134"/>
+  </g>
+  <g font-size="15" fill="#334155" text-anchor="middle">
+    <text x="285" y="50">원본 업로드</text>
+    <text x="575" y="50">업로드 이벤트</text>
+    <text x="865" y="50">작업 생성</text>
+    <text x="1070" y="210">영상·썸네일</text>
+    <text x="905" y="225">상태 변경</text>
+    <text x="390" y="305">결과 통지</text>
+    <text x="555" y="400">결과 내려받기</text>
+  </g>
+</svg>
