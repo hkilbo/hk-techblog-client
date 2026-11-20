@@ -143,7 +143,7 @@ NAVER Cloud Platform의 NAS 마운트 가이드는 `vers=3`과 `defaults` 옵션
 
 ### 환경 비교
 
-AWS Elemental MediaConvert는 AWS가 관리하는 파일 기반 영상 변환 서비스입니다. 서버 없이 작업 단위로 인코딩을 요청합니다.
+ffmpeg는 영상 변환 도구로, 인코딩 서버에 설치해 명령으로 실행합니다. AWS Elemental MediaConvert는 AWS가 관리하는 파일 기반 영상 변환 서비스입니다. 서버 없이 작업 단위로 인코딩을 요청합니다.
 
 <table style="display: table; width: 100%">
   <thead>
@@ -155,55 +155,24 @@ AWS Elemental MediaConvert는 AWS가 관리하는 파일 기반 영상 변환 �
   </thead>
   <tbody>
     <tr>
-      <td style="white-space: nowrap">장점</td>
-      <td>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 기존 인코딩 명령과 처리 흐름을 그대로 사용</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 증설을 제외한 개선은 서버를 늘리지 않고 적용 가능</span>
-      </td>
-      <td>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 인코딩 서버를 운영하지 않음</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 앞 영상의 처리가 끝나기를 기다리지 않고, 파일 확인 대기도 없음</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리량이 적으면 비용도 적음</span>
-      </td>
+      <td style="white-space: nowrap">운영 방식</td>
+      <td>인코딩 서버를 직접 구성하고 운영</td>
+      <td>작업을 큐에 제출하면 서비스가 처리</td>
     </tr>
     <tr>
-      <td style="white-space: nowrap">단점</td>
-      <td>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 단계 통합과 설정 조정 뒤에도 처리 총량은 서버 한 대의 CPU로 제한</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 동시 건수가 늘면 건당 처리 시간도 증가</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 프리셋 변경이 화질과 용량에 영향</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 대기열 정책을 바꿔도 긴 영상의 처리 시간은 그대로이며, 긴 영상이 몰리면 다시 대기 발생</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 상한을 넘으려면 증설이 필요하고, 증설하면 업로드가 적은 시간에도 비용이 고정으로 발생</span>
-      </td>
-      <td>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• ffmpeg 명령을 작업 설정으로 옮기고 Lambda와 상태 연동을 새로 구현해야 함</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리량에 따라 비용이 달라져 월 비용을 예측하기 어려움</span>
-      </td>
+      <td style="white-space: nowrap">처리량</td>
+      <td>서버의 CPU 범위 안에서 처리하며, 늘리려면 서버 사양·대수를 증설</td>
+      <td>큐에 제출된 작업을 병렬로 처리하며, 큐의 자원이 모두 사용 중이면 작업이 대기</td>
     </tr>
     <tr>
       <td style="white-space: nowrap">비용 구조</td>
-      <td>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 서버 비용 고정</span>
-      </td>
-      <td>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리한 영상 길이만큼 과금</span>
-      </td>
+      <td>처리량과 관계없이 서버 비용 발생</td>
+      <td>출력 영상 길이 기준 과금. 해상도·코덱 등 사용 기능에 따라 단가가 달라짐</td>
     </tr>
     <tr>
-      <td style="white-space: nowrap">해야 할 일</td>
-      <td>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 단계별 딜레이 제거: <code>lookupcache=positive</code> 마운트 옵션 적용 또는 결과 파일 확인을 ffmpeg 서버에서 수행</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 인코딩 단계 통합: 해상도 조정, 워터마크 삽입, 인트로·아웃트로 병합을 한 번의 인코딩으로 처리해 영상당 인코딩 횟수를 세 번에서 한 번으로 축소</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 인코딩 설정 조정: 프리셋과 스레드 수를 지정해 건당 CPU 사용량을 줄이고, 동시 실행 시 코어를 나눠 할당</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 대기열 정책 변경: 짧은 영상 우선 처리 또는 길이별 대기열 분리</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 서버 관리: 인코딩 서버 상시 운영, 처리량이 부족하면 서버 사양·대수 증설</span>
-      </td>
-      <td>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 작업 설정 작성: 해상도 조정, 워터마크 삽입, 인트로·아웃트로 병합, 썸네일 추출을 작업 설정(JSON)으로 이전</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 작업 생성 Lambda: 원본이 S3에 업로드되면 VMS에서 인코딩 옵션을 조회해 작업 생성</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 이벤트 연동: 작업 상태 변경 이벤트를 받아 진행 중, 실패, 완료를 VMS에 전달하는 Lambda와 이를 수신하는 VMS API 구현</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 비용 관리: 처리하는 영상 길이로 비용 추정</span>
-      </td>
+      <td style="white-space: nowrap">제어 범위</td>
+      <td>명령 옵션과 필터를 직접 조합</td>
+      <td>서비스가 제공하는 기능을 작업 설정(JSON)으로 지정</td>
     </tr>
   </tbody>
 </table>
@@ -218,9 +187,17 @@ AWS Elemental MediaConvert는 AWS가 관리하는 파일 기반 영상 변환 �
 - 영상 길이와 용량이 일정하지 않습니다. 짧은 영상은 빠르게 끝나지만, 긴 영상 한 건이 서버를 오래 점유합니다
 - 점유하는 동안 이후에 등록된 영상은 모두 대기합니다. 대기 시간은 앞선 영상의 길이에 따라 달라집니다
 
-서버 사양을 높이거나 대수를 늘리면 대기는 줄어듭니다. 그러나 업로드가 적은 환경에서는 유휴 자원도 함께 늘어납니다. 가장 긴 영상에 맞춰 사양을 정하면 평상시에는 자원이 남고, 평상시에 맞추면 긴 영상이 등록될 때 대기가 길어집니다. **업로드가 적고 불규칙한 환경에는 고정 용량 서버가 적합하지 않았습니다.**
+기존 환경 안에서 개선할 수 있는 부분도 있었습니다. 단계별 딜레이는 `lookupcache=positive` 마운트 옵션을 적용하거나 결과 파일 확인을 ffmpeg 서버에서 수행하면 제거할 수 있었습니다. 해상도 조정, 워터마크 삽입, 인트로·아웃트로 병합을 한 번의 인코딩으로 통합하면 영상당 인코딩 횟수를 세 번에서 한 번으로 줄일 수 있었습니다. 짧은 영상을 먼저 처리하거나 길이별로 대기열을 나누는 방법도 있었습니다.
 
-비용도 함께 추정했습니다. Lambda는 영상 한 건을 처리하는 데 세 번 실행되고 실행 시간 합계는 약 20초입니다. 월 50건을 기준으로 계산하면 무료 제공량 안에 들어가 비용이 발생하지 않습니다. MediaConvert는 처리한 영상의 재생 시간만큼 과금되며, 월별 인코딩 재생 시간을 기준으로 월 1만 원 이내로 예상했습니다. 서버를 상시 운영하는 것보다 사용량 기반 과금 방식이 이 환경에 적합하다고 판단해 MediaConvert를 선택했습니다.
+그러나 이 개선을 모두 적용해도 처리 총량은 서버 한 대의 CPU로 제한됩니다. 동시 처리 건수를 늘리면 건당 처리 시간이 늘고, 프리셋을 바꿔 CPU 사용량을 줄이면 화질과 용량이 달라집니다. 대기열 정책을 바꿔도 긴 영상의 처리 시간은 그대로이며, 긴 영상이 몰리면 다시 대기가 발생합니다.
+
+서버 사양을 높이거나 대수를 늘리면 대기는 줄어듭니다. 그러나 업로드가 적은 환경에서는 유휴 자원도 함께 늘어납니다. 가장 긴 영상에 맞춰 사양을 정하면 평상시에는 자원이 남고, 평상시에 맞추면 긴 영상이 등록될 때 대기가 길어집니다. 인코딩 서버를 상시 운영하고 관리하는 부담도 그대로 남습니다. **업로드가 적고 불규칙한 환경에는 고정 용량 서버가 적합하지 않았습니다.**
+
+MediaConvert는 이 조건에 맞았습니다. 작업을 병렬로 처리하므로 앞 영상의 처리가 끝나기를 기다리지 않습니다. 결과 파일을 NFS로 주고받지 않으므로 파일 확인 대기도 없습니다. 인코딩 서버를 운영하지 않고, 처리한 영상만큼만 비용이 발생합니다.
+
+대신 새로 구현해야 하는 부분이 있었습니다. ffmpeg 명령으로 처리하던 해상도 조정, 워터마크 삽입, 인트로·아웃트로 병합, 썸네일 추출을 작업 설정(JSON)으로 옮겨야 했습니다. 원본 업로드 시 작업을 생성하는 Lambda와, 작업 상태(진행 중, 실패, 완료)를 VMS에 전달하는 Lambda, 이를 수신하는 VMS API도 필요했습니다. 또한 처리량에 따라 비용이 달라지므로 월 비용을 미리 확정하기 어렵습니다.
+
+그래서 비용은 처리할 영상의 길이로 추정했습니다. Lambda는 영상 한 건을 처리하는 데 세 번 실행되고 실행 시간 합계는 약 20초입니다. 월 50건을 기준으로 계산하면 무료 제공량 안에 들어가 비용이 발생하지 않습니다. MediaConvert는 처리한 영상의 재생 시간만큼 과금되며, 월별 인코딩 재생 시간을 기준으로 월 1만 원 이내로 예상했습니다. 서버를 상시 운영하는 것보다 사용량 기반 과금 방식이 이 환경에 적합하다고 판단해 MediaConvert를 선택했습니다.
 
 ## 서버리스 환경으로
 
