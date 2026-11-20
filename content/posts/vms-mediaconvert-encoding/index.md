@@ -219,9 +219,9 @@ NAVER Cloud Platform의 NAS 마운트 가이드는 `vers=3`과 `defaults` 옵션
 
 ### 아키텍처
 
-![전환 후 인코딩 흐름. VMS 서버가 원본 버킷에 올리면 작업 생성 Lambda가 MediaConvert 작업을 만들고, 상태 전달 Lambda가 VMS에 결과를 통지한다](./flow.svg)
+![전환 후 인코딩 흐름. VMS 서버가 원본 버킷에 올리면 작업 생성 Lambda가 MediaConvert 작업을 만든다. MediaConvert의 상태 변경 이벤트는 EventBridge 기본 이벤트 버스로 전달되고, 규칙이 호출한 상태 전달 Lambda가 VMS에 결과를 통지한다](./flow.svg)
 
-VMS가 원본을 S3에 업로드하면 업로드 이벤트가 Lambda를 호출해 MediaConvert 작업을 생성합니다. 결과 영상과 썸네일은 별도의 버킷에 저장됩니다. 작업 상태가 바뀔 때마다 별도의 Lambda가 VMS에 결과를 통지합니다.
+VMS가 원본을 S3에 업로드하면 업로드 이벤트가 Lambda를 호출해 MediaConvert 작업을 생성합니다. 결과 영상과 썸네일은 별도의 버킷에 저장됩니다. 작업 상태가 바뀌면 MediaConvert가 상태 변경 이벤트를 EventBridge 기본 이벤트 버스로 보냅니다. 기본 이벤트 버스의 규칙이 상태 전달 Lambda를 호출하고, 이 Lambda가 VMS에 결과를 통지합니다.
 
 VMS는 영상 등록이 끝난 뒤에 원본을 S3에 업로드합니다. 등록 전에 업로드하면 작업 생성 Lambda가 인코딩 옵션을 조회할 때 데이터가 아직 없을 수 있기 때문입니다. 업로드 즉시 영상 상태를 인코딩 중으로 변경해, 기존 배치가 같은 영상을 중복으로 처리하지 않게 했습니다.
 
