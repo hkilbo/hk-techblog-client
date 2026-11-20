@@ -143,84 +143,80 @@ NAVER Cloud Platform의 NAS 마운트 가이드는 `vers=3`과 `defaults` 옵션
 
 ### 환경 비교
 
-두 방식을 저희가 해야 할 일, 특징, 장단점으로 비교했습니다.
-
-#### ffmpeg
-
-기존 ffmpeg 서버를 유지하는 방식입니다. 인코딩 도구는 그대로 두고 처리 구조와 서버를 개선합니다.
-
-**해야 할 일**
-
-- 단계별 딜레이 제거: `lookupcache=positive` 마운트 옵션을 적용하거나, 결과 파일 확인을 ffmpeg 서버에서 수행합니다
-- 인코딩 단계 통합: 해상도 조정, 워터마크 삽입, 인트로·아웃트로 병합을 한 번의 인코딩으로 처리해 영상당 인코딩 횟수를 세 번에서 한 번으로 줄입니다
-- 인코딩 설정 조정: 프리셋과 스레드 수를 지정해 건당 CPU 사용량을 줄이고, 동시 실행 시 코어를 나눠 할당합니다
-- 대기열 정책 변경: 짧은 영상을 먼저 처리하거나 길이별로 대기열을 나눠, 짧은 영상이 긴 영상 뒤에서 대기하지 않게 합니다
-- 서버 관리: 인코딩 서버를 상시 운영하고, 처리량이 부족하면 서버 사양이나 대수를 늘립니다
-
-**특징**
-
-인코딩 명령과 처리 흐름을 직접 제어합니다. 처리 총량의 상한은 서버의 CPU이고, 비용은 처리량과 관계없이 서버 비용으로 고정됩니다.
-
-**장단점**
-
-- 장점: 기존 인코딩 명령과 처리 흐름을 그대로 사용합니다. 위 개선 중 증설을 제외한 방법은 서버를 늘리지 않고 적용할 수 있습니다
-- 단점: 단계 통합과 설정 조정 뒤에도 처리 총량은 서버 한 대의 CPU로 제한됩니다. 동시 건수가 늘면 건당 처리 시간도 늘어나고, 프리셋 변경은 화질과 용량에 영향을 줍니다. 대기열 정책을 바꿔도 긴 영상의 처리 시간은 그대로이며, 긴 영상이 몰리면 다시 대기가 생깁니다. 상한을 넘으려면 증설이 필요하고, 증설하면 업로드가 적은 시간에도 비용이 고정으로 발생합니다
-
-#### MediaConvert
-
 AWS Elemental MediaConvert는 AWS가 관리하는 파일 기반 영상 변환 서비스입니다. 서버 없이 작업 단위로 인코딩을 요청합니다.
-
-**해야 할 일**
-
-- 작업 설정 작성: 해상도 조정, 워터마크 삽입, 인트로·아웃트로 병합, 썸네일 추출을 MediaConvert 작업 설정(JSON)으로 옮깁니다
-- 작업 생성 Lambda: 원본이 S3에 업로드되면 VMS에서 인코딩 옵션을 조회해 MediaConvert 작업을 생성합니다
-- 이벤트 연동: 작업 상태 변경 이벤트를 받아 진행 중, 실패, 완료를 VMS에 전달하는 Lambda와, 이를 수신하는 VMS API를 구현합니다
-- 비용 관리: 사용량 기반 과금이므로 처리하는 영상 길이로 비용을 추정합니다
-
-**특징**
-
-작업마다 독립적으로 실행되어 여러 영상을 동시에 처리합니다. 완료는 작업 상태 변경 이벤트로 확인하므로, 공유 볼륨에서 결과 파일을 기다리지 않습니다. 비용은 처리한 영상 길이만큼 과금됩니다.
-
-**장단점**
-
-- 장점: 인코딩 서버를 운영하지 않습니다. 앞 영상의 처리가 끝나기를 기다리지 않고, 파일 확인 대기도 발생하지 않습니다. 처리량이 적으면 비용도 적습니다
-- 단점: ffmpeg 명령을 작업 설정으로 옮기고, Lambda와 상태 연동을 새로 구현해야 합니다. 처리량이 늘면 비용도 함께 늘어납니다
-
-두 방식의 차이를 정리하면 다음과 같습니다.
 
 <table style="display: table; width: 100%">
   <thead>
     <tr>
-      <th>기준</th>
-      <th>AS-IS (ffmpeg 서버)</th>
-      <th>TO-BE (MediaConvert)</th>
+      <th style="white-space: nowrap">구분</th>
+      <th>ffmpeg</th>
+      <th>MediaConvert</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>작업 시작</td>
-      <td>1분 주기 배치가 대기 건 조회</td>
-      <td>업로드 이벤트로 작업 생성</td>
+      <td style="white-space: nowrap">특징</td>
+      <td>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 인코딩 명령과 처리 흐름을 직접 제어</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리 총량은 서버 한 대의 자원에 따라 달라짐</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리량과 관계없이 서버 비용 고정</span>
+      </td>
+      <td>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 작업마다 독립 실행되어 여러 영상을 동시에 처리</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 완료를 작업 상태 변경 이벤트로 확인하므로 공유 볼륨에서 결과 파일을 기다리지 않음</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리한 영상 길이만큼 과금</span>
+      </td>
     </tr>
     <tr>
-      <td>동시 처리</td>
-      <td>1건</td>
-      <td>작업마다 독립 실행</td>
+      <td style="white-space: nowrap">장점</td>
+      <td>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 기존 인코딩 명령과 처리 흐름을 그대로 사용</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 증설을 제외한 개선은 서버를 늘리지 않고 적용 가능</span>
+      </td>
+      <td>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 인코딩 서버를 운영하지 않음</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 앞 영상의 처리가 끝나기를 기다리지 않고, 파일 확인 대기도 없음</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리량이 적으면 비용도 적음</span>
+      </td>
     </tr>
     <tr>
-      <td>완료 확인</td>
-      <td>명령 종료 후 결과 파일 대기</td>
-      <td>작업 상태 변경 이벤트</td>
+      <td style="white-space: nowrap">단점</td>
+      <td>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 단계 통합과 설정 조정 뒤에도 처리 총량은 서버 한 대의 CPU로 제한</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 동시 건수가 늘면 건당 처리 시간도 증가</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 프리셋 변경이 화질과 용량에 영향</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 대기열 정책을 바꿔도 긴 영상의 처리 시간은 그대로이며, 긴 영상이 몰리면 다시 대기 발생</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 상한을 넘으려면 증설이 필요하고, 증설하면 업로드가 적은 시간에도 비용이 고정으로 발생</span>
+      </td>
+      <td>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• ffmpeg 명령을 작업 설정으로 옮기고 Lambda와 상태 연동을 새로 구현해야 함</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리량이 늘면 비용도 함께 증가</span>
+      </td>
     </tr>
     <tr>
-      <td>서버 운영</td>
-      <td>인코딩 서버 상시 운영</td>
-      <td>없음</td>
+      <td style="white-space: nowrap">비용 구조</td>
+      <td>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 서버 비용 고정</span>
+      </td>
+      <td>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리한 영상 길이만큼 과금</span>
+      </td>
     </tr>
     <tr>
-      <td>비용 구조</td>
-      <td>서버 비용 고정</td>
-      <td>처리한 영상 길이만큼 과금</td>
+      <td style="white-space: nowrap">해야 할 일</td>
+      <td>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 단계별 딜레이 제거: <code>lookupcache=positive</code> 마운트 옵션 적용 또는 결과 파일 확인을 ffmpeg 서버에서 수행</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 인코딩 단계 통합: 해상도 조정, 워터마크 삽입, 인트로·아웃트로 병합을 한 번의 인코딩으로 처리해 영상당 인코딩 횟수를 세 번에서 한 번으로 축소</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 인코딩 설정 조정: 프리셋과 스레드 수를 지정해 건당 CPU 사용량을 줄이고, 동시 실행 시 코어를 나눠 할당</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 대기열 정책 변경: 짧은 영상 우선 처리 또는 길이별 대기열 분리</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 서버 관리: 인코딩 서버 상시 운영, 처리량이 부족하면 서버 사양·대수 증설</span>
+      </td>
+      <td>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 작업 설정 작성: 해상도 조정, 워터마크 삽입, 인트로·아웃트로 병합, 썸네일 추출을 작업 설정(JSON)으로 이전</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 작업 생성 Lambda: 원본이 S3에 업로드되면 VMS에서 인코딩 옵션을 조회해 작업 생성</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 이벤트 연동: 작업 상태 변경 이벤트를 받아 진행 중, 실패, 완료를 VMS에 전달하는 Lambda와 이를 수신하는 VMS API 구현</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 비용 관리: 처리하는 영상 길이로 비용 추정</span>
+      </td>
     </tr>
   </tbody>
 </table>
