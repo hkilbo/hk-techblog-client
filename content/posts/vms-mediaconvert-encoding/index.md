@@ -139,11 +139,9 @@ NAVER Cloud Platform의 NAS 마운트 가이드는 `vers=3`과 `defaults` 옵션
 
 ## 기존 환경 개선 VS 서버리스 환경 전환
 
-기존 환경을 개선하는 방향과 서버리스 환경으로 전환하는 방향을 검토했습니다.
+기존 환경은 ffmpeg로 인코딩하고 있었지만, 업로드량이 불규칙해 인코딩 서버를 직접 운영하는 대신 AWS Elemental MediaConvert를 활용한 서버리스 환경으로 전환하는 방안을 고려하게 됐습니다. 기존 환경을 개선하는 방향과 서버리스 환경으로 전환하는 방향을 검토했습니다.
 
 ### 환경 비교
-
-ffmpeg는 영상 변환 도구로, 인코딩 서버에 설치해 명령으로 실행합니다. AWS Elemental MediaConvert는 AWS가 관리하는 파일 기반 영상 변환 서비스입니다. 서버 없이 작업 단위로 인코딩을 요청합니다.
 
 <table style="display: table; width: 100%">
   <thead>
