@@ -25,8 +25,8 @@ VMS는 필요한 영상만 전송 전에 인코딩하는데요, 여기서 인코
 <table style="display: table; width: 100%">
   <thead>
     <tr>
-      <th>케이스</th>
-      <th>인코딩 시간</th>
+      <th style="width: 55%">케이스</th>
+      <th style="width: 45%">인코딩 시간</th>
     </tr>
   </thead>
   <tbody>
