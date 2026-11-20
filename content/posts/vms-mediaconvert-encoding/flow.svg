@@ -5,12 +5,12 @@
   <rect width="1180" height="440" fill="#ffffff"/>
   <g font-size="20" text-anchor="middle" fill="#0f172a">
     <rect x="40" y="60" width="200" height="70" rx="10" fill="#e0f2fe" stroke="#0369a1" stroke-width="2"/><text x="140" y="102">VMS 서버</text>
-    <rect x="330" y="60" width="200" height="70" rx="10" fill="#fef3c7" stroke="#b45309" stroke-width="2"/><text x="430" y="102">원본 버킷 (S3)</text>
-    <rect x="620" y="60" width="200" height="70" rx="10" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/><text x="720" y="102">작업 생성 Lambda</text>
-    <rect x="910" y="60" width="200" height="70" rx="10" fill="#dcfce7" stroke="#15803d" stroke-width="2"/><text x="1010" y="102">MediaConvert</text>
-    <rect x="330" y="280" width="200" height="70" rx="10" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/><text x="430" y="322">상태 전달 Lambda</text>
-    <rect x="620" y="280" width="200" height="70" rx="10" fill="#fce7f3" stroke="#be185d" stroke-width="2"/><text x="720" y="310">EventBridge</text><text x="720" y="335" font-size="15" fill="#334155">기본 이벤트 버스</text>
-    <rect x="910" y="280" width="200" height="70" rx="10" fill="#fef3c7" stroke="#b45309" stroke-width="2"/><text x="1010" y="322">결과 버킷 (S3)</text>
+    <rect x="330" y="60" width="200" height="70" rx="10" fill="#E7EED5" stroke="#7AA116" stroke-width="3"/><text x="430" y="102">원본 버킷 (S3)</text>
+    <rect x="620" y="60" width="200" height="70" rx="10" fill="#FDE5D1" stroke="#ED7100" stroke-width="3"/><text x="720" y="102">작업 생성 Lambda</text>
+    <rect x="910" y="60" width="200" height="70" rx="10" fill="#FDE5D1" stroke="#ED7100" stroke-width="3"/><text x="1010" y="102">MediaConvert</text>
+    <rect x="330" y="280" width="200" height="70" rx="10" fill="#FDE5D1" stroke="#ED7100" stroke-width="3"/><text x="430" y="322">상태 전달 Lambda</text>
+    <rect x="620" y="280" width="200" height="70" rx="10" fill="#FBD5E7" stroke="#E7157B" stroke-width="3"/><text x="720" y="310">EventBridge</text><text x="720" y="335" font-size="15" fill="#334155">기본 이벤트 버스</text>
+    <rect x="910" y="280" width="200" height="70" rx="10" fill="#E7EED5" stroke="#7AA116" stroke-width="3"/><text x="1010" y="322">결과 버킷 (S3)</text>
   </g>
   <g stroke="#475569" stroke-width="2" fill="none" marker-end="url(#a)">
     <line x1="240" y1="95" x2="326" y2="95"/>
