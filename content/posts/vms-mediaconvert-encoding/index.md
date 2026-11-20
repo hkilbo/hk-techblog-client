@@ -155,19 +155,6 @@ AWS Elemental MediaConvert는 AWS가 관리하는 파일 기반 영상 변환 �
   </thead>
   <tbody>
     <tr>
-      <td style="white-space: nowrap">특징</td>
-      <td>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 인코딩 명령과 처리 흐름을 직접 제어</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리 총량은 서버 한 대의 자원에 따라 달라짐</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리량과 관계없이 서버 비용 고정</span>
-      </td>
-      <td>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 작업마다 독립 실행되어 여러 영상을 동시에 처리</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 완료를 작업 상태 변경 이벤트로 확인하므로 공유 볼륨에서 결과 파일을 기다리지 않음</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리한 영상 길이만큼 과금</span>
-      </td>
-    </tr>
-    <tr>
       <td style="white-space: nowrap">장점</td>
       <td>
         <span style="display: block; padding-left: 1em; text-indent: -1em">• 기존 인코딩 명령과 처리 흐름을 그대로 사용</span>
@@ -190,7 +177,7 @@ AWS Elemental MediaConvert는 AWS가 관리하는 파일 기반 영상 변환 �
       </td>
       <td>
         <span style="display: block; padding-left: 1em; text-indent: -1em">• ffmpeg 명령을 작업 설정으로 옮기고 Lambda와 상태 연동을 새로 구현해야 함</span>
-        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리량이 늘면 비용도 함께 증가</span>
+        <span style="display: block; padding-left: 1em; text-indent: -1em">• 처리량에 따라 비용이 달라져 월 비용을 예측하기 어려움</span>
       </td>
     </tr>
     <tr>
