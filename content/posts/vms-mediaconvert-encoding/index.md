@@ -3,7 +3,7 @@ title: "영상 인코딩 환경 개선: 서버리스 환경으로 이관한 이�
 summary: "영상 등록부터 외부 채널 전송까지 시간이 오래 걸린다는 현업의 불만에서 출발해, 단계별 소요 시간으로 인코딩의 지연 원인을 찾고 ffmpeg 인코딩 서버를 AWS Elemental MediaConvert로 전환한 과정을 정리합니다."
 category: tech
 topic: cloud
-tags: ["AWS", "MediaConvert", "Lambda", "ffmpeg", "NFS", "서버리스"]
+tags: ["AWS", "MediaConvert", "Lambda", "ffmpeg", "서버리스"]
 author: { name: "김유정", role: "Backend Engineer" }
 publishedAt: 2024-11-05
 readingMinutes: 16
@@ -241,7 +241,7 @@ AWS Elemental MediaConvert는 AWS가 관리하는 파일 기반 영상 변환 �
 
 ## 서버리스 환경으로
 
-### 전환된 MediaConvert 구조
+### 아키텍처
 
 ![전환 후 인코딩 흐름. VMS 서버가 원본 버킷에 올리면 작업 생성 Lambda가 MediaConvert 작업을 만들고, 상태 전달 Lambda가 VMS에 결과를 통지한다](./flow.svg)
 
@@ -277,8 +277,6 @@ MediaConvert 작업 상태는 세 가지로 수신합니다.
 </table>
 
 ### 고려 사항
-
-#### 아키텍처 선택
 
 MediaConvert 작업을 어디에서 생성할지에 따라 두 가지 구조를 검토했습니다.
 
