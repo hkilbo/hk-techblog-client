@@ -29,7 +29,7 @@
     <text x="360" y="251" fill="#b91c1c">+ 결과 파일 대기</text>
     <text x="590" y="251" fill="#b91c1c">+ 결과 파일 대기</text>
     <text x="820" y="251" fill="#b91c1c">+ 결과 파일 대기</text>
-    <text x="1050" y="251" fill="#334155">ffmpeg로 조회</text>
+    <text x="1050" y="251" fill="#334155">FFmpeg로 조회</text>
     <text x="130" y="415" fill="#334155">1분 주기</text>
     <text x="360" y="415" fill="#334155">유튜브 · 페이스북</text>
   </g>
@@ -48,7 +48,7 @@
   </g>
   <g font-size="15" fill="#334155">
     <rect x="720" y="377" width="22" height="14" rx="3" fill="#fee2e2" stroke="#b91c1c" stroke-width="2"/>
-    <text x="752" y="389">VMS 서버가 SSH로 ffmpeg 서버에 보내는 명령</text>
+    <text x="752" y="389">VMS 서버가 SSH로 FFmpeg 서버에 보내는 명령</text>
     <rect x="720" y="407" width="22" height="14" rx="3" fill="#fee2e2" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 3"/>
     <text x="752" y="419">옵션에 따라 건너뜀 (썸네일은 직접 등록하면 생략)</text>
   </g>
