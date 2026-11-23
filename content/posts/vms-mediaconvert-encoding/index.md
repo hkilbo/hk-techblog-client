@@ -1,6 +1,6 @@
 ---
 title: "인코딩 환경 개선: 서버리스 환경으로 이관한 이유"
-summary: "영상 등록부터 외부 채널 전송까지 시간이 오래 걸린다는 현업의 의견에서 출발해, 단계별 소요 시간으로 인코딩의 지연 원인을 찾고 FFmpeg 인코딩 서버를 AWS Elemental MediaConvert로 전환한 과정을 정리합니다."
+summary: "영상 등록부터 외부 채널 전송까지 시간이 오래 걸린다는 문제에서 출발해, 단계별 소요 시간으로 인코딩의 지연 원인을 찾고 FFmpeg 인코딩 서버를 AWS Elemental MediaConvert로 전환한 과정을 정리합니다."
 category: tech
 topic: cloud
 tags: ["AWS", "MediaConvert", "Lambda", "FFmpeg", "서버리스"]
